@@ -5,7 +5,7 @@ const app = express();
 
 
 app.use('/', agentRoutes);
-/// app.use('/', transactionRoutes);
+app.use('/', transactionRoutes);
 
 
 module.exports = app;
