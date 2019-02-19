@@ -53,13 +53,18 @@ class UsersController {
                 password
             } = req.body;
             const agentNumber = config.SUPERAGENT;
-            console.log(agentNumber, 'oneeeeee', phoneNumber)
             const user = await User.findOne({
                 phoneNumber
             });
-            if (phoneNumber.trim() !== agentNumber && user.password !== password.trim()) {
+            if (phoneNumber.trim() !== agentNumber) {
                 return res.status(403).json(
-                    responses.error(403, 'Sorry, you do not not have access to this page')
+                    responses.error(403, 'Sorry, incorrect phone number')
+                );
+            }
+
+            if (password !== user.password) {
+                return res.status(403).json(
+                    responses.error(403, 'sorry, incorrect password')
                 );
             }
             if (user) {
