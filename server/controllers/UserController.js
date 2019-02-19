@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const bcrypt =  require('bcrypt');
 const User = require('../models/Users');
 const responses = require('../utils/responses');
 const config = require('../config/index');
@@ -21,7 +22,7 @@ class UsersController {
     static async createSuperAgent() {
         try {
             const phoneNumber = config.SUPERAGENT;
-            const password = 'superagent';
+            const password = bcrypt.hashSync('superagent', 10);
             const userObject = {
                 phoneNumber: phoneNumber,
                 password: password,
@@ -32,7 +33,7 @@ class UsersController {
             });
             if (mongoUser === null) {
                 await User.create(userObject);
-                console.log('I was created');
+                console.log('I was created', userObject);
             }
         } catch (error) {
             return (error);
@@ -391,6 +392,11 @@ class UsersController {
         if (user.password !== password) {
             return res.status(404).json(
                 responses.error(404, 'Sorry, wrong password')
+            );
+        }
+        if(user.deactivate === true) {
+            return res.status(400).json(
+                responses.error(400, 'Sorry, you have been deactivated contact superagent')
             );
         }
         if (user && user.password === password) {
