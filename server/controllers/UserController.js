@@ -57,7 +57,7 @@ class UsersController {
             const user = await User.findOne({
                 phoneNumber
             });
-            if (phoneNumber !== agentNumber) {
+            if (phoneNumber !== agentNumber && user.password !== password) {
                 return res.status(403).json(
                     responses.error(403, 'Sorry, you do not not have access to this page')
                 );
