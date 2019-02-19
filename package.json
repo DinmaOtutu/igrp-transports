@@ -1,0 +1,22 @@
+{
+  "name": "igrp-transports",
+  "version": "1.0.0",
+  "description": "Built for easy commute of drivers in Nigeria",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DinmaOtutu/igrp-transports.git"
+  },
+  "keywords": [
+    "transport"
+  ],
+  "author": "Dinma Otutu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DinmaOtutu/igrp-transports/issues"
+  },
+  "homepage": "https://github.com/DinmaOtutu/igrp-transports#readme"
+}
