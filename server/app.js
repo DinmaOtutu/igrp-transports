@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const config = require('./config/index.js');
 const routes = require('./routes');
-const UsersController = require('./controllers/UsersController');
+const UsersController = require('./controllers/UserController');
 
 
 // initiate app
