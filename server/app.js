@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const config = require('./config/index.js');
 const routes = require('./routes');
 const UsersController = require('./controllers/UserController');
@@ -15,6 +16,8 @@ app.use(bodyParser.urlencoded({
  extended: false
 }));
 
+// enable cors
+app.use(cors());
 // connect to mongodb
 // const mongoURL = process.env.NODE_ENV === 'test' ? process.env.DB_URL_TEST : process.env.NODE_ENV === 'production' ? process.env.DB_URL_PROD : process.env.DB_URL_DEV;
 mongoose.connect(config.MONGODB_DATABASE, {
