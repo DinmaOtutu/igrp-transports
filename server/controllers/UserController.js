@@ -33,7 +33,6 @@ class UsersController {
             });
             if (mongoUser === null) {
                 await User.create(userObject);
-                console.log('I was created', userObject);
             }
         } catch (error) {
             return (error);
@@ -152,13 +151,10 @@ class UsersController {
             age,
             driversLicence
         } = req.body;
-
-        process.stdout.write('I got here');
         const agentNumber = await User.findOne({
             phoneNumber
         })
         if (agentNumber) {
-            process.stdout.write('I got here 2')
             return res.status(400).json(
                 responses.error(400, 'Sorry, phone number already taken')
             );
@@ -539,10 +535,10 @@ class UsersController {
      */
     static async singleAgent(req, res) {
         const {
-            deviceId
+            phoneNumber
         } = req.params;
         const agent = await User.findOne({
-            deviceId
+            phoneNumber
         });
         if (!agent) {
             return res.status(404).json(

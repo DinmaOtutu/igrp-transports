@@ -31,7 +31,9 @@ const transactionSchema = new Schema({
     },
     driverNumber: {
         type: Number
-    }
+    },
+    vehicleType: {type: String, enum: ["tipper",
+"taxi", "keke", "okada"]}
 });
 
 const Transaction = mongoose.model('transaction', transactionSchema);

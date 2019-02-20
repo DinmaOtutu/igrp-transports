@@ -39,12 +39,11 @@ router.patch('/activate', activateAgent);
 router.post('/createDriver', createDriver);
 router.get('/agents', allAgents);
 router.get('/drivers', allDrivers);
-router.get('/singleAgent/:deviceId', singleAgent);
-
 router.patch('/updateId', agentDeviceNumber);
 
 // number verification
-router.use(numberChecker)
+router.use(numberChecker);
+router.get('/singleAgent/:phoneNumber', singleAgent);
 router.get('/singleDriver/:phoneNumber',singleDriver);
 
 module.exports = router;

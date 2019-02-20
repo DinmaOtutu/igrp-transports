@@ -42,7 +42,6 @@ class TransactionController {
                 fullname,
                 phoneNumber
             } = agent;
-            console.log(agent)
             const transactionDetails = {
                 vehicleNumber,
                 tipperPrice,
@@ -77,7 +76,6 @@ class TransactionController {
     static async getTransactions(req, res) {
         const allTransactions = await Transaction.find({});
         if (!allTransactions) {
-            console.log('here')
             return res.status(404).json(
                 responses.error(404, 'Sorry, no transactions created yet!')
             );

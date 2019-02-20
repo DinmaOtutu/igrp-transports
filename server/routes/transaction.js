@@ -15,7 +15,7 @@ const {
 } = TransactionController;
 
 // authenticate routes
-// router.use(auth);
+router.use(auth);
 
 // routes
 router.post('/createTransaction', createTransaction);
