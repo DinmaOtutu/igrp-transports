@@ -174,7 +174,7 @@ class UsersController {
             age,
             driversLicence,
             role: 'user'
-        
+        }
         const createdAgent = await User.create(userObject);
         if (createdAgent) {
             return res.status(201).json(

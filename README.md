@@ -5,6 +5,9 @@
   - [LOGIN AGENT](#login-agent)
   - [CREATE AGENT](#create-agent)
   - [UPDATE AGENT](#update-agent)
+  - [DELETE AN AGENT](#delete-an-agent)
+  - [DEACTIVATE AGENT](#deactivate-agent)
+  - [ACTIVATE AGENT](#activate-agent)
 
 ## Vision
 IGRP is an application that aids transport community carry out their daily tranasction and charges for different vehicles.
@@ -89,3 +92,34 @@ PATCH REQUEST
 }
 https://igrp-transports.herokuapp.com/api/updateAgent
 ```
+
+## DELETE AN AGENT
+Only a superagent can delete an agent, to delete an agent, the PHONE NUMBER is sent:
+```
+DELETE REQUEST
+{
+    "phoneNumber" : "agent number"
+}
+https://igrp-transports.herokuapp.com/api/deleteAgent
+```
+
+## DEACTIVATE AGENT
+Only a super admin can deactivate an agent, by deactivating this agent, the user cannot have access to login or perform any transaction on the app.
+```
+PATCH REQUEST
+{
+    "phoneNumber": "agent number"
+}
+https://igrp-transports.herokuapp.com/api/deactivate
+```
+
+## ACTIVATE AGENT
+When a superagent wants to activate an agent after deactivating the agent, to achieve that this endpoint is accessed
+```
+PATCH REQUEST
+{
+    "phoneNumber": "agent number"
+}
+https://igrp-transports.herokuapp.com/api/activate
+```
+
