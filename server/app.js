@@ -32,7 +32,7 @@ app.get('/api', (req, res) => {
 });
 
 (async () => {
-  console.log('I was created here')
+  
   return await UsersController.createSuperAgent();
 })();
 

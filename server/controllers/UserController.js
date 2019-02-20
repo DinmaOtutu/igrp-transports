@@ -63,7 +63,7 @@ class UsersController {
                 );
             }
 
-            if (password !== user.password) {
+            if (!bcrypt.compareSync(password, user.password)) {
                 return res.status(403).json(
                     responses.error(403, 'sorry, incorrect password')
                 );
@@ -152,10 +152,13 @@ class UsersController {
             age,
             driversLicence
         } = req.body;
+
+        process.stdout.write('I got here');
         const agentNumber = await User.findOne({
             phoneNumber
         })
         if (agentNumber) {
+            process.stdout.write('I got here 2')
             return res.status(400).json(
                 responses.error(400, 'Sorry, phone number already taken')
             );
@@ -167,11 +170,11 @@ class UsersController {
             bvn,
             nimc,
             email,
-            password,
+           password: bcrypt.hashSync(password, 10),
             age,
             driversLicence,
             role: 'user'
-        }
+        
         const createdAgent = await User.create(userObject);
         if (createdAgent) {
             return res.status(201).json(
@@ -182,6 +185,7 @@ class UsersController {
             responses.error(500, 'Sorry, server error')
         );
     }
+
 
     /**
      *@description update an agents detail
@@ -389,17 +393,17 @@ class UsersController {
                 responses.error(404, 'Sorry, this agent does not exist')
             );
         }
-        if (user.password !== password) {
-            return res.status(404).json(
-                responses.error(404, 'Sorry, wrong password')
+        if (!bcrypt.compareSync(password, user.password)) {
+            return res.status(403).json(
+                responses.error(403, 'sorry, incorrect password')
             );
         }
         if(user.deactivate === true) {
             return res.status(400).json(
-                responses.error(400, 'Sorry, you have been deactivated contact superagent')
+                responses.error(400, 'Sorry, you have been deactivated contact')
             );
         }
-        if (user && user.password === password) {
+        if (user) {
             const payload = {
                 id: user._id,
                 phoneNumber: user.phoneNumber
