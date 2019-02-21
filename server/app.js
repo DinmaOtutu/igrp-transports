@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const morgan =  require('morgan');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const config = require('./config/index.js');
@@ -18,6 +19,9 @@ app.use(bodyParser.urlencoded({
 
 // enable cors
 app.use(cors());
+
+// morgan
+app.use(morgan('tiny'))
 // connect to mongodb
 // const mongoURL = process.env.NODE_ENV === 'test' ? process.env.DB_URL_TEST : process.env.NODE_ENV === 'production' ? process.env.DB_URL_PROD : process.env.DB_URL_DEV;
 mongoose.connect(config.MONGODB_DATABASE, {
