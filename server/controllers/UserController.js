@@ -236,7 +236,6 @@ class UsersController {
             password,
             age,
             driversLicence,
-            imenumber
         } = req.body;
         const userToUpdate = await User.findOneAndUpdate({
             phoneNumber
@@ -449,7 +448,7 @@ class UsersController {
                 responses.error(400, 'Sorry, this vehicle number is taken')
             );
         }
-        if (!driver) {
+        if (!driver && !driverNumber) {
             const driverObject = {
                 phoneNumber,
                 vehicleType,
