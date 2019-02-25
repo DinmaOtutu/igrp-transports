@@ -56,7 +56,9 @@ const userSchema = new Schema({
     },
     plateNumber: {
         type: String,
-    }
+    },
+    vehicleType: {type: String, enum: ["tipper",
+"taxi", "keke", "okada"]}
 });
 
 const User = mongoose.model('user', userSchema);
