@@ -84,10 +84,13 @@ class TransactionController {
             const returnedTransactions = allTransactions.map((transaction) => ({
                 id: transaction.id,
                 date: transaction.date,
-                agentName: transaction.fullname,
+                agentName: transaction.agentName,
                 vehicleNumber: transaction.vehicleNumber,
-                agentNumber: transaction.phoneNumber
+                agentNumber: transaction.agentNumber,
+                driverName: transaction.driverName
             }));
+            
+            console.log(returnedTransactions, '=============')
             return res.status(200).json(
                 responses.success(200, 'All retrieved succssfully', returnedTransactions)
             );
