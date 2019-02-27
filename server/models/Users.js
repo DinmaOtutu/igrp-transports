@@ -8,9 +8,13 @@ const userSchema = new Schema({
         type: Number,
         unique: true,
         required: true,
+        min: 11,
+        max: 11,
+        description: "phone number must be 11 digits"
     },
     password: {
-        type: String
+        type: String,
+        required: true
     },
     role: {
         type: String,
@@ -25,6 +29,8 @@ const userSchema = new Schema({
     bvn: {
         type: Number,
         unique: true,
+        min: 10,
+        max: 10,
         description: "BVN is unique and has already been used by another agent"
     },
     nimc: {
@@ -66,10 +72,11 @@ const userSchema = new Schema({
     },
     plateNumber: {
         type: String,
+        description: "this plateNumber has been used by another agent"
     },
     vehicleType: {
         type: String,
-         enum: ["tipper",
+        enum: ["tipper",
 "taxi", "keke", "okada"],
 description: "vehicle type can either be tipper, taxi, keke or okada"
 }
