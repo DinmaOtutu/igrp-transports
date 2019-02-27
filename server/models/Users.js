@@ -23,19 +23,27 @@ const userSchema = new Schema({
         type: String
     },
     bvn: {
-        type: Number
+        type: Number,
+        unique: true,
+        description: "BVN is unique and has already been used by another agent"
     },
     nimc: {
-        type: String
+        type: String,
+        unique: true,
+        description: "NIMC is unique, an agent has already registered with this"
     },
     email: {
-        type: String
+        type: String,
+        unique: true,
+        description: "Email has already been used by another agent"
     },
     age: {
         type: Number
     },
     driversLicense: {
-        type: String
+        type: String,
+        unique: true,
+        description: "the driver license has already been used"
     },
     deviceId: {
         type: String
@@ -47,7 +55,9 @@ const userSchema = new Schema({
 
     vehicleNumber: {
         type: Number,
-        sparse: true
+        sparse: true,
+        unique: true,
+        description: "this vehicle number has been assigned to an agent already"
     },
 
     date: {
@@ -57,8 +67,12 @@ const userSchema = new Schema({
     plateNumber: {
         type: String,
     },
-    vehicleType: {type: String, enum: ["tipper",
-"taxi", "keke", "okada"]}
+    vehicleType: {
+        type: String,
+         enum: ["tipper",
+"taxi", "keke", "okada"],
+description: "vehicle type can either be tipper, taxi, keke or okada"
+}
 });
 
 const User = mongoose.model('user', userSchema);
