@@ -309,6 +309,11 @@ class UsersController {
         const {
             phoneNumber
         } = req.body;
+        if(phoneNumber === '' || phoneNumber === null || phoneNumber === undefined) {
+            return res.status(400).json(
+                responses.error(404, 'Sorry, this field is required')
+            );
+        }
         const user = await User.findOneAndUpdate({
             phoneNumber
         }, {
