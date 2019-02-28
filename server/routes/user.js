@@ -32,10 +32,10 @@ router.post('/superLogin', loginSuperAgent);
 router.use(auth);
 // routes that require token
 router.post('/createAgent', createAgent);
-router.put('/updateAgent', updateAgent);
+router.patch('/updateAgent', updateAgent);
 router.delete('/deleteAgent', deleteAgent);
-router.put('/deactivate', deactivateAgent);
-router.put('/activate', activateAgent);
+router.patch('/deactivate', deactivateAgent);
+router.patch('/activate', activateAgent);
 router.post('/createDriver', createDriver);
 router.get('/agents', allAgents);
 router.get('/drivers', allDrivers);
