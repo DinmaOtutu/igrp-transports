@@ -279,7 +279,7 @@ class UsersController {
     static async deleteAgent(req, res) {
         const {
             phoneNumber
-        } = req.body;
+        } = req.params;
         const user = await User.findOneAndDelete({
             phoneNumber
         });
