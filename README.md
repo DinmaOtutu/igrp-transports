@@ -229,3 +229,9 @@ We can get the transactions carried out by each agent
 GET REQUEST
 https://igrp-transports.herokuapp.com/apidriverTransaction/{drivers's Number}
 ```
+
+## AUTHOR
+- Yours truly DinmaOtutu
+
+## App Hosted
+`https://igrp-transport.herokuapp.com/api`
