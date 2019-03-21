@@ -9,7 +9,7 @@ const userSchema = new Schema({
         unique: true,
         required: true,
         min: 10,
-        description: "phone number must be 11 digits"
+        description: "phone number must be 10 digits"
     },
     password: {
         type: String,
