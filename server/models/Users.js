@@ -40,6 +40,7 @@ const userSchema = new Schema({
     email: {
         type: String,
         unique: true,
+        lowercase: true,
         description: "Email has already been used by another agent"
     },
     age: {
