@@ -3,14 +3,15 @@ const bodyParser = require('body-parser');
 const morgan =  require('morgan');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const config = require('./server/config/index.js');
+const dotenv = require('dotenv');
+const config = require('./server/config/index');
 const routes = require('./server/routes');
 const UsersController = require('./server/controllers/UserController');
 
 
 // initiate app
 const app = express();
-
+dotenv.config();
 // body-parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -30,7 +31,7 @@ app.use(function(req, res, next) {
 // morgan
 app.use(morgan('tiny'))
 // connect to mongodb
- const mongoURL = process.env.NODE_ENV === 'test' ? config.DB_URL_TEST : process.env.NODE_ENV === 'production' ? config.DB_URL_PROD : config.MONGODB_DATABASE;
+ const mongoURL = process.env.NODE_ENV === 'test' ? config.DB_URL_TEST : process.env.NODE_ENV === 'production' ? process.env.DB_URL_PROD : process.env.DB_URL;
 mongoose.connect(mongoURL, {
  useNewUrlParser: true,
  useCreateIndex: true,
