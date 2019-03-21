@@ -32,7 +32,7 @@ class UsersController {
                 phoneNumber
             });
             if (mongoUser === null) {
-                await User.create(userObject);
+                await User.save(userObject);
             }
         } catch (error) {
             return (error);
@@ -68,6 +68,8 @@ class UsersController {
                 );
             }
             if (user) {
+
+                return console.log(user)
                 const payload = {
                     id: user._id,
                     phoneNumber: user.phoneNumber

@@ -30,8 +30,8 @@ app.use(function(req, res, next) {
 // morgan
 app.use(morgan('tiny'))
 // connect to mongodb
-// const mongoURL = process.env.NODE_ENV === 'test' ? process.env.DB_URL_TEST : process.env.NODE_ENV === 'production' ? process.env.DB_URL_PROD : process.env.DB_URL_DEV;
-mongoose.connect(config.MONGODB_DATABASE, {
+ const mongoURL = process.env.NODE_ENV === 'test' ? config.DB_URL_TEST : process.env.NODE_ENV === 'production' ? config.DB_URL_PROD : config.MONGODB_DATABASE;
+mongoose.connect(mongoURL, {
  useNewUrlParser: true,
  useCreateIndex: true,
  useFindAndModify: false
@@ -41,11 +41,7 @@ mongoose.connect(config.MONGODB_DATABASE, {
 app.get('/api', (req, res) => {
  res.json('Welcome to IGR Api');
 });
-
-(async () => {
-  
-  return await UsersController.createSuperAgent();
-})();
+(async () =>  await UsersController.createSuperAgent())();
 
 // routes
 app.use('/api', routes);
