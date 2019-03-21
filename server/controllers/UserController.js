@@ -487,7 +487,7 @@ class UsersController {
             const agents = await User.find({
                 role: 'user'
             });
-            if (!agents) {
+            if (agents.length === 0) {
                 return res.status(404).json(
                     responses.error(404, 'Sorry, no agents created yet!')
                 );

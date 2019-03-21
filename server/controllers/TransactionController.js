@@ -75,7 +75,7 @@ class TransactionController {
      */
     static async getTransactions(req, res) {
         const allTransactions = await Transaction.find({});
-        if (!allTransactions) {
+        if (!allTransactions.length) {
             return res.status(404).json(
                 responses.error(404, 'Sorry, no transactions created yet!')
             );
@@ -90,7 +90,6 @@ class TransactionController {
                 driverName: transaction.driverName
             }));
             
-            console.log(returnedTransactions, '=============')
             return res.status(200).json(
                 responses.success(200, 'All retrieved succssfully', returnedTransactions)
             );
@@ -114,7 +113,7 @@ class TransactionController {
         const agent = await Transaction.find({
             agentNumber
         });
-        if (!agent) {
+        if (!agent.length) {
             return res.status(404).json(
                 responses.error(404, 'sorry, this agent does not exist')
             );
@@ -156,7 +155,7 @@ class TransactionController {
         const findDriver = await Transaction.find({
             driverNumber
         });
-        if (!findDriver) {
+        if (!findDriver.length) {
             return res.status(404).json(
                 responses.error(404, 'sorry, this driver has no trips yet')
             );
