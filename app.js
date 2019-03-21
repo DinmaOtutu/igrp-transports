@@ -3,9 +3,9 @@ const bodyParser = require('body-parser');
 const morgan =  require('morgan');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const config = require('./config/index.js');
-const routes = require('./routes');
-const UsersController = require('./controllers/UserController');
+const config = require('./server/config/index.js');
+const routes = require('./server/routes');
+const UsersController = require('./server/controllers/UserController');
 
 
 // initiate app
