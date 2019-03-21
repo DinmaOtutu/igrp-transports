@@ -32,7 +32,7 @@ class UsersController {
                 phoneNumber
             });
             if (mongoUser === null) {
-                await User.save(userObject);
+                await User.create(userObject); 
             }
         } catch (error) {
             return (error);
@@ -52,10 +52,12 @@ class UsersController {
                 phoneNumber,
                 password
             } = req.body;
+            console.log(req.body)
             const agentNumber = config.SUPERAGENT;
             const user = await User.findOne({
                 phoneNumber
             });
+            console.log(user)
             if (phoneNumber.trim() !== agentNumber) {
                 return res.status(403).json(
                     responses.error(403, 'Sorry, incorrect phone number')
@@ -68,8 +70,6 @@ class UsersController {
                 );
             }
             if (user) {
-
-                return console.log(user)
                 const payload = {
                     id: user._id,
                     phoneNumber: user.phoneNumber
