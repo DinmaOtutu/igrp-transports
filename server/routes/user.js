@@ -29,11 +29,11 @@ const {
 router.post('/superLogin', loginSuperAgent);
 
 // // authenticated routes
-router.use(auth);
+// router.use(auth);
 // routes that require token
 router.post('/createAgent', createAgent);
 router.patch('/updateAgent', updateAgent);
-router.delete('/deleteAgent', deleteAgent);
+router.delete('/deleteAgent/:phoneNumber', deleteAgent);
 router.patch('/deactivate', deactivateAgent);
 router.patch('/activate', activateAgent);
 router.post('/createDriver', createDriver);
