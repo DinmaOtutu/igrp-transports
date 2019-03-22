@@ -8,19 +8,19 @@ const router = Router();
 
 // destructuring
 const {
-    loginSuperAgent,
-    createAgent,
-    updateAgent,
-    deleteAgent,
-    deactivateAgent,
-    activateAgent,
-    loginAgent,
-    createDriver,
-    allAgents,
-    allDrivers,
-    singleAgent,
-    singleDriver,
-    agentDeviceNumber
+  loginSuperAgent,
+  createAgent,
+  updateAgent,
+  deleteAgent,
+  deactivateAgent,
+  activateAgent,
+  loginAgent,
+  createVehicle,
+  allAgents,
+  allVehicle,
+  singleAgent,
+  singleVehicle,
+  agentDeviceNumber
 } = UserController;
 
 // routes
@@ -36,14 +36,14 @@ router.patch('/updateAgent', updateAgent);
 router.delete('/deleteAgent/:phoneNumber', deleteAgent);
 router.patch('/deactivate', deactivateAgent);
 router.patch('/activate', activateAgent);
-router.post('/createDriver', createDriver);
+router.post("/createVehicle", createVehicle);
 router.get('/agents', allAgents);
-router.get('/drivers', allDrivers);
+router.get("/vehicles", allVehicle);
 router.patch('/updateId', agentDeviceNumber);
 
 // number verification
 router.use(numberChecker);
 router.get('/singleAgent/:phoneNumber', singleAgent);
-router.get('/singleDriver/:phoneNumber',singleDriver);
+router.get("/singleVehicle/:vrtID", singleVehicle);
 
 module.exports = router;
