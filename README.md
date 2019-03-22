@@ -148,7 +148,7 @@ PATCH REQUEST
 https://igrp-transports.herokuapp.com/api/activate
 ```
 
-## CREATE AGENT
+## CREATE DRIVER
 
 A super agent can create a driver, only drivers created by the super admin can carry out transactions on the application.
 `Availabe vehicle types are tipper1 (N250), tipper2(500), tipper3(1000)`
@@ -160,10 +160,13 @@ POST REQUEST
             "vehicleType": "vehicle type"
             "vehicleNumber": "vehicleNumber
             "fullname": "driver name"
-            "driversLicence": "driversLicence"
+            "driversLicence": "driversLicence",
+            "password": "password"
             "plateNumber":"vehicle plateNumber"
 }
 https://igrp-transports.herokuapp.com/api/createDriver
+vehicleType: {type: String, enum: ["tipper",
+"taxi", "keke", "okada"]}
 ```
 
 ## GET ALL AGENTS
