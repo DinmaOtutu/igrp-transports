@@ -437,7 +437,8 @@ class UsersController {
             vehicleNumber,
             fullname,
             driversLicence,
-            plateNumber
+            plateNumber,
+            password
         } = req.body;
         const driver = await User.findOne({
             phoneNumber
@@ -463,6 +464,7 @@ class UsersController {
                 fullname,
                 driversLicence,
                 plateNumber,
+                password,
                 role: 'driver'
             }
             const createDriver = await User.create(driverObject);
