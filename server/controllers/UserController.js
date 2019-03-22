@@ -3,8 +3,8 @@ const bcrypt = require("bcrypt");
 const User = require("../models/Users");
 const responses = require("../utils/responses");
 const config = require("../config/index");
-const validateAgentInput = require("../middlewares/joivalidation");
-const validateVehicleInput = require('../middlewares/joivalidation')
+const validateAgentInput = require("../middlewares/agentvalidation");
+const validateVehicleInput = require('../middlewares/vehicleValidation')
 const { JWT_SECRET } = config;
 /**
  * @description Defines the actions to for the users endpoints
@@ -157,7 +157,6 @@ class UsersController {
                 fullname,
                 address,
                 bvn,
-                nimc,
                 email,
                 password,
                 age,
@@ -184,7 +183,6 @@ class UsersController {
                 phoneNumber,
                 address,
                 bvn,
-                nimc,
                 email,
                 password: bcrypt.hashSync(password, 10),
                 age,

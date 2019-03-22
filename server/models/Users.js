@@ -13,11 +13,7 @@ const userSchema = new Schema({
     type: String
     // required: true
   },
-  driversLicence: {
-    type: String,
-    required: true,
-    unique: true
-  },
+
   role: {
     type: String,
     enum: ["admin", "user", "driver"]
@@ -32,11 +28,6 @@ const userSchema = new Schema({
     type: Number,
     unique: true,
     description: "BVN is unique and has been registered"
-  },
-  nimc: {
-    type: String,
-    unique: true,
-    description: "NIMC is unique, an agent has already registered with this"
   },
   email: {
     type: String,
@@ -57,7 +48,8 @@ const userSchema = new Schema({
     type: String
   },
   meansOfId: {
-    type: String
+    type: String,
+    enum: ['voters card','international passport','national id card','drivers license']
   },
   idNumber: {
     type: String
