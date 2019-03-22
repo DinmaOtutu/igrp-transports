@@ -52,12 +52,10 @@ class UsersController {
                 phoneNumber,
                 password
             } = req.body;
-            console.log(req.body)
             const agentNumber = config.SUPERAGENT;
             const user = await User.findOne({
                 phoneNumber
             });
-            console.log(user)
             if (phoneNumber.trim() !== agentNumber) {
                 return res.status(403).json(
                     responses.error(403, 'Sorry, incorrect phone number')

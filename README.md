@@ -161,7 +161,6 @@ POST REQUEST
             "vehicleNumber": "vehicleNumber
             "fullname": "driver name"
             "driversLicence": "driversLicence",
-            "password": "password"
             "plateNumber":"vehicle plateNumber"
 }
 https://igrp-transports.herokuapp.com/api/createDriver
