@@ -27,10 +27,7 @@ const userSchema = new Schema({
     },
     bvn: {
         type: Number,
-        unique: true,
-        min: 10,
-        max: 10,
-        description: "BVN is unique and has already been used by another agent"
+        unique: true
     },
     nimc: {
         type: String,
