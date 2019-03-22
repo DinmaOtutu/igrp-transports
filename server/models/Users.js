@@ -27,7 +27,8 @@ const userSchema = new Schema({
     },
     bvn: {
         type: Number,
-        unique: true
+        unique: true, 
+        description: "BVN is unique and has been registered"
     },
     nimc: {
         type: String,
