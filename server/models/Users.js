@@ -8,9 +8,8 @@ const userSchema = new Schema({
         type: Number,
         unique: true,
         required: true,
-        min: 11,
-        max: 11,
-        description: "phone number must be 11 digits"
+        min: 10,
+        description: "phone number must be 10 digits"
     },
     password: {
         type: String,
@@ -28,10 +27,8 @@ const userSchema = new Schema({
     },
     bvn: {
         type: Number,
-        unique: true,
-        min: 10,
-        max: 10,
-        description: "BVN is unique and has already been used by another agent"
+        unique: true, 
+        description: "BVN is unique and has been registered"
     },
     nimc: {
         type: String,
@@ -41,6 +38,7 @@ const userSchema = new Schema({
     email: {
         type: String,
         unique: true,
+        lowercase: true,
         description: "Email has already been used by another agent"
     },
     age: {
