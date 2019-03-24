@@ -4,7 +4,7 @@ const User = require("../models/Users");
 const responses = require("../utils/responses");
 const config = require("../config/index");
 const validateAgentInput = require("../middlewares/agentvalidation");
-const validateVehicleInput = require('../middlewares/vehicleValidation')
+const validateVehicleInput = require("../middlewares/vehicleValidation");
 const { JWT_SECRET } = config;
 /**
  * @description Defines the actions to for the users endpoints
@@ -145,66 +145,73 @@ class UsersController {
    *@returns {object} - null
    *@memberof UserController
    */
-    static async createAgent(req, res) {
-        try {
-            const { error } = validateAgentInput(req.body);
+  static async createAgent(req, res) {
+    try {
+      const { error } = validateAgentInput(req.body);
 
-            if (error) {
-                return res.status(400).json({ message: error.details[0].message });
-            }
-            const {
-                phoneNumber,
-                fullname,
-                address,
-                bvn,
-                email,
-                password,
-                age,
-                driversLicence,
-                guarantorsFullName,
-                guarantorsPhonenumber,
-                guarantorsAddress,
-                meansOfId,
-                idNumber
-            } = req.body;
-            const agentNumber = await User.findOne({
-                phoneNumber
-            });
-            if (agentNumber) {
-                return res
-                    .status(400)
-                    .json(responses.error(400, "Sorry, phone number already taken"));
-            }
-            if (password.length === null || password.length === '' || password.length === undefined) {
-                return res.status(400).json(responses.error(400, 'password field cannot be empty'));
-            }
-            const userObject = {
-                fullname,
-                phoneNumber,
-                address,
-                bvn,
-                email,
-                password: bcrypt.hashSync(password, 10),
-                age,
-                driversLicence,
-                guarantorsFullName,
-                guarantorsPhonenumber,
-                guarantorsAddress,
-                meansOfId,
-                idNumber,
-                role: "user"
-            };
-            const createdAgent = await User.create(userObject);
-            if (createdAgent) {
-                return res
-                    .status(201)
-                    .json(responses.success(201, "Agent successfully created", userObject));
-            }
-            return res.status(500).json(responses.error(500, "Sorry, server error"));
-        } catch (error) {
-            console.log(error);
-        }
-   
+      if (error) {
+        return res.status(400).json({ message: error.details[0].message });
+      }
+      const {
+        phoneNumber,
+        fullname,
+        address,
+        bvn,
+        email,
+        password,
+        age,
+        driversLicence,
+        guarantorsFullName,
+        guarantorsPhonenumber,
+        guarantorsAddress,
+        meansOfId,
+        idNumber
+      } = req.body;
+      const agentNumber = await User.findOne({
+        phoneNumber
+      });
+      if (agentNumber) {
+        return res
+          .status(400)
+          .json(responses.error(400, "Sorry, phone number already taken"));
+      }
+      if (
+        password.length === null ||
+        password.length === "" ||
+        password.length === undefined
+      ) {
+        return res
+          .status(400)
+          .json(responses.error(400, "password field cannot be empty"));
+      }
+      const userObject = {
+        fullname,
+        phoneNumber,
+        address,
+        bvn,
+        email,
+        password: bcrypt.hashSync(password, 10),
+        age,
+        driversLicence,
+        guarantorsFullName,
+        guarantorsPhonenumber,
+        guarantorsAddress,
+        meansOfId,
+        idNumber,
+        role: "user"
+      };
+      const createdAgent = await User.create(userObject);
+      if (createdAgent) {
+        return res
+          .status(201)
+          .json(
+            responses.success(201, "Agent successfully created", userObject)
+          );
+      }
+      return res.status(500).json(responses.error(500, "Sorry, server error"));
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   /**
@@ -258,7 +265,12 @@ class UsersController {
       email,
       password,
       age,
-      driversLicence
+      driversLicence,
+      guarantorsFullName,
+      guarantorsPhonenumber,
+      guarantorsAddress,
+      meansOfId,
+      idNumber
     } = req.body;
     const userToUpdate = await User.findOneAndUpdate(
       {
@@ -273,7 +285,12 @@ class UsersController {
           email,
           password,
           age,
-          driversLicence
+          driversLicence,
+          guarantorsFullName,
+          guarantorsPhonenumber,
+          guarantorsAddress,
+          meansOfId,
+          idNumber
         }
       },
       {
@@ -297,6 +314,7 @@ class UsersController {
       .json(responses.error(500, "Failed to update, server error"));
   }
 
+  
   /**
    *@description delete an agent
    *@static
@@ -461,19 +479,18 @@ class UsersController {
    */
   static async createVehicle(req, res) {
     try {
+      const { error } = validateVehicleInput(req.body);
 
-        const { error } = validateVehicleInput(req.body);
-
-        if (error) {
-            return res.status(400).json({ message: error.details[0].message });
-        }
+      if (error) {
+        return res.status(400).json({ message: error.details[0].message });
+      }
       const {
         phoneNumber,
         vehicleType,
         vehicleNumber,
         driversLicence,
         plateNumber,
-          vehicleOwnerName,
+        vehicleOwnerName,
         vehicleOwnerAdress,
         RegistrationYear,
         chasisNo,
@@ -487,36 +504,33 @@ class UsersController {
       const vehicle = await User.findOne({
         plateNumber
       });
-        if (vehicle) {
-            return res
-                .status(400)
-                .json(
-                    responses.error(
-                        400,
-                        "Sorry, this Plate number is taken and the vehicle exist"
-                    )
-                );
-        }
+      if (vehicle) {
+        return res
+          .status(400)
+          .json(
+            responses.error(
+              400,
+              "Sorry, this Plate number is taken and the vehicle exist"
+            )
+          );
+      }
 
-        const vehicleTaxID= await User.findOne({vrtID});
-       
-        if(vehicleTaxID){
-            return res
-                .status(400)
-                .json(
-                    responses.error(
-                        400,
-                        "Sorry, this Vehicle Tax ID already exists"
-                    )
-                );
-        }
+      const vehicleTaxID = await User.findOne({ vrtID });
+
+      if (vehicleTaxID) {
+        return res
+          .status(400)
+          .json(
+            responses.error(400, "Sorry, this Vehicle Tax ID already exists")
+          );
+      }
       const phoneNumb = await User.findOne({ phoneNumber });
       if (phoneNumb) {
         return res
           .status(400)
           .json(responses.error(400, "Sorry, this phone number is taken"));
       }
-     
+
       const theVehicleNumber = await User.findOne({
         vehicleNumber
       });
@@ -525,60 +539,57 @@ class UsersController {
           .status(400)
           .json(responses.error(400, "Sorry, this vehicle number is taken"));
       }
-        const dlicense = await User.findOne({ driversLicence });
-        if (dlicense) {
-            return res
-                .status(400)
-                .json(responses.error(400, "Sorry, this driver's license already exists"));
-        }
-        if (
-          !vehicle &&
-          !theVehicleNumber &&
-          !vehicleTaxID &&
-          !dlicense && !phoneNumb
-        ) {
-          const vehicleObject = {
-            phoneNumber,
-            vehicleType,
-            vehicleNumber,
-            driversLicence,
-            plateNumber,
-              vehicleOwnerName,
-            vehicleOwnerAdress,
-            RegistrationYear,
-            chasisNo,
-            engineNumber,
-            vehicleMake,
-            vrtID,
-            RoadWorthinessExpDate,
-            InsuranceExpDate,
-            locationOfTransaction,
-            role: "driver"
-          };
-          const createVehicle = await User.create(vehicleObject);
-          return res
-            .status(200)
-            .json(
-              responses.success(
-                200,
-                "Vehicle created successfully",
-                createVehicle
-              )
-            );
-        }
+      const dlicense = await User.findOne({ driversLicence });
+      if (dlicense) {
+        return res
+          .status(400)
+          .json(
+            responses.error(400, "Sorry, this driver's license already exists")
+          );
+      }
+      if (
+        !vehicle &&
+        !theVehicleNumber &&
+        !vehicleTaxID &&
+        !dlicense &&
+        !phoneNumb
+      ) {
+        const vehicleObject = {
+          phoneNumber,
+          vehicleType,
+          vehicleNumber,
+          driversLicence,
+          plateNumber,
+          vehicleOwnerName,
+          vehicleOwnerAdress,
+          RegistrationYear,
+          chasisNo,
+          engineNumber,
+          vehicleMake,
+          vrtID,
+          RoadWorthinessExpDate,
+          InsuranceExpDate,
+          locationOfTransaction,
+          role: "driver"
+        };
+        const createVehicle = await User.create(vehicleObject);
+        return res
+          .status(200)
+          .json(
+            responses.success(
+              200,
+              "Vehicle created successfully",
+              createVehicle
+            )
+          );
+      }
       return res
         .status(500)
         .json(responses.error(500, "Failed to create a Vehicle"));
-    } catch (error) {console.log(error.message)}
+    } catch (error) {
+      console.log(error.message);
+    }
   }
-
-/**
- *@description get a vehicle
- *@static
- *@param  {Object} res - response
- *@returns {object} - null
- *@memberof UserController
- */
 
   /**
    *@description get all agents
@@ -610,7 +621,7 @@ class UsersController {
   }
 
   /**
-   *@description get all drivers
+   *@description get all Vehicles
    *@static
    *@param  {Object} res - response
    *@returns {object} - null
@@ -628,7 +639,9 @@ class UsersController {
     if (vehicle) {
       return res
         .status(200)
-        .json(responses.success(200, "Successfully retrieved vehicles", vehicle));
+        .json(
+          responses.success(200, "Successfully retrieved vehicles", vehicle)
+        );
     }
     return res.status(500).json(responses.error(500, "Sorry, server error!"));
   }
@@ -659,29 +672,103 @@ class UsersController {
   }
 
   /**
-   *@description get a single driver
+   *@description get a single vehicle
    *@static
    *@param  {Object} res - response
    *@returns {object} - null
    *@memberof UserController
    */
   static async singleVehicle(req, res) {
-      const { vrtID } = req.params;
+    const { vrtID } = req.params;
     const vTaxId = await User.findOne({
-        vrtID
+      vrtID
     });
-      if (!vTaxId) {
+    if (!vTaxId) {
       return res
         .status(404)
         .json(responses.error(404, "Sorry, this Vehicle does not exist!"));
     }
-      if (vTaxId) {
+    if (vTaxId) {
       return res
         .status(200)
-          .json(responses.success(200, "Successfully retrieved vehicle", vTaxId));
+        .json(responses.success(200, "Successfully retrieved vehicle", vTaxId));
     }
     return res.status(500).json(responses.error(500, "Sorry, server error!"));
   }
+
+  /**
+   *@description update vehicle
+   *@static
+   *@param  {Object} res - response
+   *@returns {object} - null
+   *@memberof UserController
+   */
+    static async updateVehicle(req, res) {
+        try {
+            const {
+                phoneNumber,
+                vehicleType,
+                vehicleNumber,
+                driversLicence,
+                plateNumber,
+                vehicleOwnerName,
+                vehicleOwnerAdress,
+                RegistrationYear,
+                chasisNo,
+                engineNumber,
+                vehicleMake,
+                vrtID,
+                RoadWorthinessExpDate,
+                InsuranceExpDate,
+                locationOfTransaction
+            } = req.body;
+            const vehicleToUpdate = await User.findOneAndUpdate(
+                {
+                    vrtID
+                },
+                {
+                    $set: {
+                        phoneNumber,
+                        vehicleType,
+                        vehicleNumber,
+                        driversLicence,
+                        plateNumber,
+                        vehicleOwnerName,
+                        vehicleOwnerAdress,
+                        RegistrationYear,
+                        chasisNo,
+                        engineNumber,
+                        vehicleMake,
+                        RoadWorthinessExpDate,
+                        InsuranceExpDate,
+                        locationOfTransaction
+                    }
+                },
+                {
+                    new: true
+                }
+            );
+
+            if (!vehicleToUpdate) {
+                return res
+                    .status(404)
+                    .json(responses.error(404, "This Vehicle Tax ID does not exist"));
+            }
+            if (vehicleToUpdate) {
+                return res
+                    .status(200)
+                    .json(
+                        responses.success(200, "Vehicle successfully updated", vehicleToUpdate)
+                    );
+            }
+            return res
+                .status(500)
+                .json(responses.error(500, "Failed to update, server error"));
+
+        } catch (error) {
+            return error;
+        }
+    }
 }
 
 module.exports = UsersController;

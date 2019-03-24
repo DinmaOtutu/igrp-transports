@@ -20,6 +20,7 @@ const {
   allVehicle,
   singleAgent,
   singleVehicle,
+  updateVehicle,
   agentDeviceNumber
 } = UserController;
 
@@ -33,6 +34,8 @@ router.post('/superLogin', loginSuperAgent);
 // routes that require token
 router.post('/createAgent', createAgent);
 router.patch('/updateAgent', updateAgent);
+router.patch('/updateVehicle', updateVehicle);
+
 router.delete('/deleteAgent/:phoneNumber', deleteAgent);
 router.patch('/deactivate', deactivateAgent);
 router.patch('/activate', activateAgent);
