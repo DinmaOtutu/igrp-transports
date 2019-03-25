@@ -22,7 +22,6 @@ router.post('/createTransaction', createTransaction);
 router.get('/transactions', getTransactions);
 
 // number validation 
-router.use(numberChecker)
 router.get('/agentTransaction/:agentNumber', numberChecker, getAgentTransaction);
 router.get('/driverTransaction/:driverNumber', numberChecker, getDriverTrips);
 
