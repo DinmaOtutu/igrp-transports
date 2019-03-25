@@ -103,10 +103,6 @@ const userSchema = new Schema({
   locationOfTransaction: {
     type: String
   },
-  timeOfTransaction: {
-      type: Date,
-      default: Date.now().toString()
-  },
 
   vehicleNumber: {
     type: Number,
