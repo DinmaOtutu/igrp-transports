@@ -160,7 +160,6 @@ class UsersController {
         email,
         password,
         age,
-        driversLicence,
         guarantorsFullName,
         guarantorsPhonenumber,
         guarantorsAddress,
@@ -192,7 +191,6 @@ class UsersController {
         email,
         password: bcrypt.hashSync(password, 10),
         age,
-        driversLicence,
         guarantorsFullName,
         guarantorsPhonenumber,
         guarantorsAddress,
@@ -261,11 +259,11 @@ class UsersController {
       fullname,
       address,
       bvn,
-      nimc,
+
       email,
       password,
       age,
-      driversLicence,
+
       guarantorsFullName,
       guarantorsPhonenumber,
       guarantorsAddress,
@@ -281,11 +279,9 @@ class UsersController {
           fullname,
           address,
           bvn,
-          nimc,
           email,
           password,
           age,
-          driversLicence,
           guarantorsFullName,
           guarantorsPhonenumber,
           guarantorsAddress,
@@ -314,7 +310,6 @@ class UsersController {
       .json(responses.error(500, "Failed to update, server error"));
   }
 
-  
   /**
    *@description delete an agent
    *@static
@@ -703,72 +698,75 @@ class UsersController {
    *@returns {object} - null
    *@memberof UserController
    */
-    static async updateVehicle(req, res) {
-        try {
-            const {
-                phoneNumber,
-                vehicleType,
-                vehicleNumber,
-                driversLicence,
-                plateNumber,
-                vehicleOwnerName,
-                vehicleOwnerAdress,
-                RegistrationYear,
-                chasisNo,
-                engineNumber,
-                vehicleMake,
-                vrtID,
-                RoadWorthinessExpDate,
-                InsuranceExpDate,
-                locationOfTransaction
-            } = req.body;
-            const vehicleToUpdate = await User.findOneAndUpdate(
-                {
-                    vrtID
-                },
-                {
-                    $set: {
-                        phoneNumber,
-                        vehicleType,
-                        vehicleNumber,
-                        driversLicence,
-                        plateNumber,
-                        vehicleOwnerName,
-                        vehicleOwnerAdress,
-                        RegistrationYear,
-                        chasisNo,
-                        engineNumber,
-                        vehicleMake,
-                        RoadWorthinessExpDate,
-                        InsuranceExpDate,
-                        locationOfTransaction
-                    }
-                },
-                {
-                    new: true
-                }
-            );
-
-            if (!vehicleToUpdate) {
-                return res
-                    .status(404)
-                    .json(responses.error(404, "This Vehicle Tax ID does not exist"));
-            }
-            if (vehicleToUpdate) {
-                return res
-                    .status(200)
-                    .json(
-                        responses.success(200, "Vehicle successfully updated", vehicleToUpdate)
-                    );
-            }
-            return res
-                .status(500)
-                .json(responses.error(500, "Failed to update, server error"));
-
-        } catch (error) {
-            return error;
+  static async updateVehicle(req, res) {
+    try {
+      const {
+        phoneNumber,
+        vehicleType,
+        vehicleNumber,
+        driversLicence,
+        plateNumber,
+        vehicleOwnerName,
+        vehicleOwnerAdress,
+        RegistrationYear,
+        chasisNo,
+        engineNumber,
+        vehicleMake,
+        vrtID,
+        RoadWorthinessExpDate,
+        InsuranceExpDate,
+        locationOfTransaction
+      } = req.body;
+      const vehicleToUpdate = await User.findOneAndUpdate(
+        {
+          vrtID
+        },
+        {
+          $set: {
+            phoneNumber,
+            vehicleType,
+            vehicleNumber,
+            driversLicence,
+            plateNumber,
+            vehicleOwnerName,
+            vehicleOwnerAdress,
+            RegistrationYear,
+            chasisNo,
+            engineNumber,
+            vehicleMake,
+            RoadWorthinessExpDate,
+            InsuranceExpDate,
+            locationOfTransaction
+          }
+        },
+        {
+          new: true
         }
+      );
+
+      if (!vehicleToUpdate) {
+        return res
+          .status(404)
+          .json(responses.error(404, "This Vehicle Tax ID does not exist"));
+      }
+      if (vehicleToUpdate) {
+        return res
+          .status(200)
+          .json(
+            responses.success(
+              200,
+              "Vehicle successfully updated",
+              vehicleToUpdate
+            )
+          );
+      }
+      return res
+        .status(500)
+        .json(responses.error(500, "Failed to update, server error"));
+    } catch (error) {
+      return error;
     }
+  }
 }
 
 module.exports = UsersController;
