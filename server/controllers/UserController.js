@@ -38,7 +38,6 @@ class UsersController {
     }
   }
 
-<<<<<<< HEAD
     /**
      *@description Login super agent
      *@static
@@ -61,29 +60,6 @@ class UsersController {
                     responses.error(403, 'Sorry, incorrect phone number')
                 );
             }
-=======
-  /**
-   *@description Login super agent
-   *@static
-   *@param  {Object} res - response
-   *@returns {object} - null
-   *@memberof UserController
-   */
-  static async loginSuperAgent(req, res) {
-    try {
-      const { phoneNumber, password } = req.body;
-      console.log(req.body);
-      const agentNumber = config.SUPERAGENT;
-      const user = await User.findOne({
-        phoneNumber
-      });
-      console.log(user);
-      if (phoneNumber.trim() !== agentNumber) {
-        return res
-          .status(403)
-          .json(responses.error(403, "Sorry, incorrect phone number"));
-      }
->>>>>>> 650cf00cfdc86f8336c08d58de263103228fc739
 
       if (!bcrypt.compareSync(password, user.password)) {
         return res
