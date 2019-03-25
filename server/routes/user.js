@@ -3,7 +3,6 @@ const {
 } = require('express')
 const UserController = require('../controllers/UserController');
 const auth = require('../middlewares/authentication');
-const numberChecker = require('../middlewares/validation');
 const router = Router();
 
 // destructuring
@@ -42,7 +41,6 @@ router.get('/drivers', allDrivers);
 router.patch('/updateId', agentDeviceNumber);
 
 // number verification
-router.use(numberChecker);
 router.get('/singleAgent/:phoneNumber', singleAgent);
 router.get('/singleDriver/:phoneNumber',singleDriver);
 
