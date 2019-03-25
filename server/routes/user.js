@@ -32,9 +32,10 @@ router.post('/superLogin', loginSuperAgent);
 // // authenticated routes
 // router.use(auth);
 // routes that require token
-router.post('/createAgent', createAgent);
+
 router.patch('/updateAgent', updateAgent);
 router.patch('/updateVehicle', updateVehicle);
+router.post("/createAgent", createAgent);
 
 router.delete('/deleteAgent/:phoneNumber', deleteAgent);
 router.patch('/deactivate', deactivateAgent);
@@ -46,6 +47,7 @@ router.patch('/updateId', agentDeviceNumber);
 
 // number verification
 // router.use(numberChecker);
+
 router.get('/singleAgent/:phoneNumber', singleAgent);
 router.get("/singleVehicle/:vrtID", singleVehicle);
 
