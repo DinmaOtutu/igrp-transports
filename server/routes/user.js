@@ -45,7 +45,7 @@ router.get("/vehicles", allVehicle);
 router.patch('/updateId', agentDeviceNumber);
 
 // number verification
-router.use(numberChecker);
+// router.use(numberChecker);
 router.get('/singleAgent/:phoneNumber', singleAgent);
 router.get("/singleVehicle/:vrtID", singleVehicle);
 
