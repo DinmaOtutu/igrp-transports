@@ -32,6 +32,11 @@ const transactionSchema = new Schema({
     driverNumber: {
         type: Number
     },
+    vrtID: {
+        type: Number,
+        unique: true,
+        description: "This vehicle road tax ID has already been taken by another driver"
+    },
     vehicleType: {type: String, enum: ["tipper",
 "taxi", "keke", "okada"]}
 });

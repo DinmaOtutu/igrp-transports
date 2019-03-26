@@ -8,10 +8,10 @@ const numberChecker = require('../middlewares/validation');
 const router = Router();
 
 const {
-    createTransaction,
-    getTransactions,
-    getAgentTransaction,
-    getDriverTrips
+  createTransaction,
+  getTransactions,
+  getAgentTransaction,
+  getVehicleTrips
 } = TransactionController;
 
 // authenticate routes
@@ -24,6 +24,6 @@ router.get('/transactions', getTransactions);
 // number validation 
 router.use(numberChecker)
 router.get('/agentTransaction/:agentNumber', numberChecker, getAgentTransaction);
-router.get('/driverTransaction/:driverNumber', numberChecker, getDriverTrips);
+router.get("/vehicleTransaction/:vrtID", numberChecker, getVehicleTrips);
 
 module.exports = router;
