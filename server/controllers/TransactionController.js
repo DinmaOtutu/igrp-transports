@@ -1,6 +1,11 @@
 const Transaction = require("../models/Transaction");
 const responses = require("../utils/responses");
+const crypto = require('crypto');
+const dotenv = require('dotenv');
 const User = require("../models/Users.js");
+const axios = require('axios');
+
+dotenv.config();
 
 /**
  * @description Defines the actions to for the users endpoints
@@ -186,6 +191,36 @@ class TransactionController {
         );
     }
     return res.status(500).json(responses.error(500, "sorry, server error"));
+  }
+
+  static async confirmBvn(req, res) {
+    try {
+    const { bvn } = req.body;
+    const clientKey = process.env.CLIENTKEY;
+    const clientId = process.env.CLIENTID;
+    const object = clientId+clientKey+bvn
+    const token = crypto.createHash('sha256')
+                    .update(object)
+                    .digest('hex')
+    const makeBvnRequest = (await axios.post(`${process.env.COMFIRMURL}${bvn}`, null,{
+      headers: {
+        CLIENTID: 133,
+        HASHTOKEN: token
+      }
+    })).data;
+    if (makeBvnRequest && makeBvnRequest.Message === 'Results Found'){
+      return res.status(200).json({
+        message: 'Bvn Successfully confirmed',
+        makeBvnRequest
+      }) 
+    }else {
+      return res.status(404).json({
+        message: makeBvnRequest.Message
+      })
+    }
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 
