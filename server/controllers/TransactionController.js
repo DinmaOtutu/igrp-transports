@@ -202,6 +202,17 @@ class TransactionController {
     const token = crypto.createHash('sha256')
                     .update(object)
                     .digest('hex')
+    if(bvn === '' || bvn === null){
+      return res.status(400).json({
+        message: 'This field is required'
+      })
+    }
+    const bvnLenght = bvn.split('').length
+    if(bvnLenght < 11){
+      return res.status(400).json({
+        message: 'Incorrect bnv number supplied. The bvn number must be 11 digits.'
+      })
+    }
     const makeBvnRequest = (await axios.post(`${process.env.COMFIRMURL}${bvn}`, null,{
       headers: {
         CLIENTID: 133,
