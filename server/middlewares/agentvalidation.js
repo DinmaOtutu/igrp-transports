@@ -20,7 +20,6 @@ function validateAgentInput(user) {
       .min(6)
       .required(),
     email: Joi.string().required(),
-    bvn: Joi.number().required(),
     age: Joi.number().required(),
     guarantorsFullName: Joi.string().required(),
     guarantorsPhonenumber: Joi.number()
