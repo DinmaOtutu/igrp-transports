@@ -12,7 +12,6 @@ const {
   getTransactions,
   getAgentTransaction,
   getVehicleTrips,
-  confirmBvn
 } = TransactionController;
 
 // authenticate routes
@@ -26,7 +25,5 @@ router.get('/transactions', getTransactions);
 router.get('/agentTransaction/:agentNumber', numberChecker, getAgentTransaction);
 router.get("/vehicleTransaction/:vrtID", numberChecker, getVehicleTrips);
 
-// Validate BVN
-router.post('/validateBvn', confirmBvn);
 
 module.exports = router;

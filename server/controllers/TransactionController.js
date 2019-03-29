@@ -4,8 +4,7 @@ const crypto = require('crypto');
 const dotenv = require('dotenv');
 const User = require("../models/Users.js");
 const axios = require('axios');
-
-dotenv.config();
+const config = require('../config/index')
 
 /**
  * @description Defines the actions to for the users endpoints
@@ -20,13 +19,21 @@ class TransactionController {
    *@memberof TransactionController
    */
   static async createTransaction(req, res) {
-    const { phoneNumber, vrtID, tipperPrice, vehicleNumber } = req.body;
+    const randomNumber = (min, max) =>
+      Math.floor(Math.random() * (max - min) + min);
+    const transID = randomNumber(1000, 99999999);
+     
+      req.body.transID = `${Date.now()}-${transID}`;
+
+    const { phoneNumber, vrtID, tipperPrice } = req.body;
     const agent = await User.findOne({
       phoneNumber
     });
     const validCarNumber = await User.findOne({
       vrtID
     });
+
+  
     if (!agent) {
       return res
         .status(404)
@@ -37,9 +44,10 @@ class TransactionController {
         .status(404)
         .json(responses.error(404, "sorry this vehicle not exist"));
     }
-    if (agent && validCarNumber) {
+    if (agent && validCarNumber && transID) {
       const { fullname, phoneNumber } = agent;
       const transactionDetails = {
+        transactionID: req.body.transID,
         vrtID,
         tipperPrice,
         agentName: fullname,
@@ -49,7 +57,9 @@ class TransactionController {
         driverNumber: validCarNumber.phoneNumber,
         vehicleNumber: validCarNumber.vehicleNumber
       };
-      const createdTransaction = await Transaction.create(transactionDetails);
+      const createdTransaction = await Transaction.create(
+        transactionDetails
+      );
 
       if (createdTransaction) {
         return res
@@ -193,35 +203,6 @@ class TransactionController {
     return res.status(500).json(responses.error(500, "sorry, server error"));
   }
 
-  static async confirmBvn(req, res) {
-    try {
-    const { bvn } = req.body;
-    const clientKey = process.env.CLIENTKEY;
-    const clientId = process.env.CLIENTID;
-    const object = clientId+clientKey+bvn
-    const token = crypto.createHash('sha256')
-                    .update(object)
-                    .digest('hex')
-    const makeBvnRequest = (await axios.post(`${process.env.COMFIRMURL}${bvn}`, null,{
-      headers: {
-        CLIENTID: 133,
-        HASHTOKEN: token
-      }
-    })).data;
-    if (makeBvnRequest && makeBvnRequest.Message === 'Results Found'){
-      return res.status(200).json({
-        message: 'Bvn Successfully confirmed',
-        makeBvnRequest
-      }) 
-    }else {
-      return res.status(404).json({
-        message: makeBvnRequest.Message
-      })
-    }
-    } catch (error) {
-      console.log(error);
-    }
-  }
 }
 
 module.exports = TransactionController;
