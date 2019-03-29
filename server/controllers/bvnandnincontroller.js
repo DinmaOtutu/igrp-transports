@@ -92,7 +92,7 @@ const { CLIENTKEY, COMFIRMURL, CLIENTID, NINURL } = config;
            if (ninReq) {
                return res.status(200).json({
                  message: `NIN Successfully confirmed! You can now create this Agent.`,
-                 ninReq
+                   nin: ninReq
                });
            } else {
                res.status(404).json({
