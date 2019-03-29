@@ -23,7 +23,12 @@ const { CLIENTKEY, COMFIRMURL, CLIENTID, NINURL } = config;
 
    static async confirmBvn(req, res) {
      try {
-       const { bvn } = req.body;
+       const { bvn } = req.params;
+         if (bvn === '' || bvn === null) {
+             return res.status(400).json({
+                 message: 'This field is required'
+             })
+         }
        const clientKey = `${CLIENTKEY}`;
        const clientId = `${CLIENTID}`;
        const object = clientId + clientKey + bvn;
@@ -62,7 +67,12 @@ const { CLIENTKEY, COMFIRMURL, CLIENTID, NINURL } = config;
 
    static async validateNin(req, res) {
        try {
-           const { regNo } = req.body;
+           const { regNo } = req.params;
+           if (regNo === " " || regNo === null) {
+             return res.status(400).json({
+               message: "This field is required"
+             });
+           }
            const clientId = `${CLIENTID}`;
            const clientKey = `${CLIENTKEY}`;
 
@@ -72,7 +82,6 @@ const { CLIENTKEY, COMFIRMURL, CLIENTID, NINURL } = config;
                .createHash("sha256")
                .update(ninObject)
                .digest("hex");
-console.log(token);
            const ninReq = (await axios.post(`${NINURL}${regNo}`, null, {
                headers: {
                    CLIENTID: `${CLIENTID}`,

@@ -8,9 +8,9 @@ const { validateNin, confirmBvn } = BvnandNinController;
 
 
 // Validate BVN
-router.post('/validateBvn', confirmBvn);
+router.post('/validateBvn/:bvn', confirmBvn);
 
 //validateNIN
-router.post('/validateNin', validateNin);
+router.post("/validateNin/:regNo", validateNin);
 
 module.exports = router;
