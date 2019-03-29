@@ -89,15 +89,15 @@ const { CLIENTKEY, COMFIRMURL, CLIENTID, NINURL } = config;
                }
            })).data;
 
-           if (ninReq) {
-               return res.status(200).json({
-                 message: `NIN Successfully confirmed! You can now create this Agent.`,
-                 ninReq
-               });
+           if (ninReq && ninReq.Message === "Results Found") {
+             return res.status(200).json({
+               message: `NIN Successfully confirmed! You can now create this Agent.`,
+               nin: ninReq
+             });
            } else {
-               res.status(404).json({
-                   message: "NIN unconfirmed"
-               });
+             res.status(404).json({
+               message: "NIN  result not found."
+             });
            }
        } catch (error) {
            console.log(error)
