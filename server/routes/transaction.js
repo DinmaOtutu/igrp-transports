@@ -27,6 +27,6 @@ router.get('/agentTransaction/:agentNumber', numberChecker, getAgentTransaction)
 router.get("/vehicleTransaction/:vrtID", numberChecker, getVehicleTrips);
 
 // Validate BVN
-router.post('/validateBvn', confirmBvn);
+router.post('/validateBvn/:bvn', confirmBvn);
 
 module.exports = router;

@@ -195,7 +195,12 @@ class TransactionController {
 
   static async confirmBvn(req, res) {
     try {
-    const { bvn } = req.body;
+    const { bvn } = req.params;
+    if(bvn === '' || bvn === null){
+      return res.status(400).json({
+        message: 'This field is required'
+      })
+    }
     const clientKey = process.env.CLIENTKEY;
     const clientId = process.env.CLIENTID;
     const object = clientId+clientKey+bvn
@@ -210,7 +215,7 @@ class TransactionController {
     })).data;
     if (makeBvnRequest && makeBvnRequest.Message === 'Results Found'){
       return res.status(200).json({
-        message: 'Bvn Successfully confirmed',
+        message: 'Bvn Successfully confirmed! You can now create this Agent.',
         makeBvnRequest
       }) 
     }else {
