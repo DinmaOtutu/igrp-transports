@@ -24,11 +24,7 @@ const userSchema = new Schema({
   address: {
     type: String
   },
-  bvn: {
-    type: Number,
-    unique: true,
-    description: "BVN is unique and has been registered"
-  },
+
   email: {
     type: String,
     unique: true,
