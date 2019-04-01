@@ -135,6 +135,7 @@ class TransactionController {
     const agent = await Transaction.find({
       agentNumber
     });
+
     if (!agent.length) {
       return res
         .status(404)
@@ -145,6 +146,7 @@ class TransactionController {
           )
         );
     }
+    
 
    
     if (agent) {
