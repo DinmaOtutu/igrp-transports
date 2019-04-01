@@ -135,11 +135,18 @@ class TransactionController {
     const agent = await Transaction.find({
       agentNumber
     });
+
     if (!agent.length) {
       return res
         .status(404)
-        .json(responses.error(404, "sorry, this agent does not exist"));
+        .json(
+          responses.error(
+            404,
+            "sorry, no transactions carried out yet by this  agent"
+          )
+        );
     }
+    
 
    
     if (agent) {
