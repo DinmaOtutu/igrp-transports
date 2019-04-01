@@ -256,7 +256,6 @@ class UsersController {
       fullname,
       address,
       email,
-      password,
       age,
       guarantorsFullName,
       guarantorsPhonenumber,
@@ -272,9 +271,7 @@ class UsersController {
         $set: {
           fullname,
           address,
-          bvn,
           email,
-          password,
           age,
           guarantorsFullName,
           guarantorsPhonenumber,
