@@ -138,7 +138,12 @@ class TransactionController {
     if (!agent.length) {
       return res
         .status(404)
-        .json(responses.error(404, "sorry, no transactions available for this agent"));
+        .json(
+          responses.error(
+            404,
+            "sorry, no transactions carried out yet by this  agent"
+          )
+        );
     }
 
    
