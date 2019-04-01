@@ -38,28 +38,25 @@ class UsersController {
     }
   }
 
-    /**
-     *@description Login super agent
-     *@static
-     *@param  {Object} res - response
-     *@returns {object} - null
-     *@memberof UserController
-     */
-    static async loginSuperAgent(req, res) {
-        try {
-            const {
-                phoneNumber,
-                password
-            } = req.body;
-            const agentNumber = config.SUPERAGENT;
-            const user = await User.findOne({
-                phoneNumber
-            });
-            if (phoneNumber.trim() !== agentNumber) {
-                return res.status(403).json(
-                    responses.error(403, 'Sorry, incorrect phone number')
-                );
-            }
+  /**
+   *@description Login super agent
+   *@static
+   *@param  {Object} res - response
+   *@returns {object} - null
+   *@memberof UserController
+   */
+  static async loginSuperAgent(req, res) {
+    try {
+      const { phoneNumber, password } = req.body;
+      const agentNumber = config.SUPERAGENT;
+      const user = await User.findOne({
+        phoneNumber
+      });
+      if (phoneNumber.trim() !== agentNumber) {
+        return res
+          .status(403)
+          .json(responses.error(403, "Sorry, incorrect phone number"));
+      }
 
       if (!bcrypt.compareSync(password, user.password)) {
         return res
@@ -157,7 +154,6 @@ class UsersController {
         phoneNumber,
         fullname,
         address,
-        bvn,
         email,
         password,
         age,
@@ -259,12 +255,9 @@ class UsersController {
       phoneNumber,
       fullname,
       address,
-      bvn,
-
       email,
       password,
       age,
-
       guarantorsFullName,
       guarantorsPhonenumber,
       guarantorsAddress,

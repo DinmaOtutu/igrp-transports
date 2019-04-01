@@ -141,16 +141,7 @@ class TransactionController {
         .json(responses.error(404, "sorry, this agent does not exist"));
     }
 
-    if (!agent.length) {
-      return res
-        .status(404)
-        .json(
-          responses.error(
-            404,
-            "sorry! no transactions carried out by this agent yet"
-          )
-        );
-    }
+   
     if (agent) {
       const retrivedAgent = agent.map(transactions => ({
         vehicleNumber: transactions.vehicleNumber,

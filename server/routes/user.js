@@ -29,7 +29,7 @@ const {
 router.post('/superLogin', loginSuperAgent);
 
 // // authenticated routes
-// router.use(auth);
+router.use(auth);
 // routes that require token
 
 router.patch('/updateAgent', updateAgent);
