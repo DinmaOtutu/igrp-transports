@@ -32,7 +32,7 @@ class WalletController {
    *@returns {object} - null
    *@memberof walletController
    */
-  static async activateWallet(req, res) {
+  static async activatedWallet(req, res) {
     try {
         const jwttoken = req.headers.authorization || req.headers['x-access-token'];
         const decoded = jwt.decode(jwttoken);

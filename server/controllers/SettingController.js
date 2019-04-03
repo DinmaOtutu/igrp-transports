@@ -17,8 +17,13 @@ class SettingController {
    */
   static async addBankData(req, res) {
     try {
+        const jwttoken = req.headers.authorization || req.headers['x-access-token'];
+        const decoded = jwt.decode(jwttoken);
+    
+        const {
+          phoneNumber
+        } = decoded;
       const {
-        phoneNumber,
         bankName,
         accountNumber
       } = req.body;
@@ -72,8 +77,14 @@ class SettingController {
    */
   static async removeBankData(req, res) {
     try {
+      const jwttoken = req.headers.authorization || req.headers['x-access-token'];
+        const decoded = jwt.decode(jwttoken);
+    
+        const {
+          phoneNumber
+        } = decoded;
+    
       const {
-        phoneNumber,
         accountNumber
       } = req.body;
       const retrievedUser = await SettingController.retrieveUser(res, phoneNumber);
