@@ -24,7 +24,9 @@ const userSchema = new Schema({
   address: {
     type: String
   },
-
+banks: {
+  type: Array
+},
   email: {
     type: String,
     unique: true,
