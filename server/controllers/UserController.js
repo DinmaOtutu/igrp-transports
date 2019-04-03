@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/Users");
 const responses = require("../utils/responses");
 const config = require("../config/index");
+const WalletController = require("../controllers/WalletController");
 const validateAgentInput = require("../middlewares/agentvalidation");
 const validateVehicleInput = require("../middlewares/vehicleValidation");
 const { JWT_SECRET } = config;
@@ -32,6 +33,7 @@ class UsersController {
       });
       if (mongoUser === null) {
         await User.create(userObject);
+        await WalletController.create(phoneNumber);
       }
     } catch (error) {
       return error;
