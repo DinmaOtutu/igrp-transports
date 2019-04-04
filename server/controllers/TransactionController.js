@@ -173,9 +173,6 @@ class TransactionController {
           )
         );
     }
-
-
-
     if (agent) {
       const retrivedAgent = agent.map(transactions => ({
         vehicleNumber: transactions.vehicleNumber,
@@ -228,7 +225,43 @@ class TransactionController {
     return res.status(500).json(responses.error(500, "sorry, server error"));
   }
 
-
+   /**
+   *@description offline debit for an agent
+   *@static
+   *@param  {Object} res - response
+   *@returns {object} - null
+   *@memberof TransactionController
+   */
+  static async debitOffline(req, res) {
+     try{
+      const jwttoken = req.headers.authorization || req.headers['x-access-token'];
+      const decoded = jwt.decode(jwttoken);
+      const {
+        phoneNumber
+      } = decoded
+      const { debitedAmount } = req.body;
+const wallet = await Wallet.findOne({phoneNumber})
+      const balance = Number(wallet.totalAmount) - Number(debitedAmount)
+    const updatedBalance =  await Wallet.findOneAndUpdate({
+        phoneNumber
+      },
+      {
+        $set: {
+          totalAmount: balance
+        }
+      },
+      {
+        new: true
+       })
+       return res
+       .status(200)
+       .json(
+         responses.success(200, "Balance updated successfully", {walletBalance: updatedBalance.totalAmount})
+       );
+     } catch(error) {
+      return res.status(500).json(responses.error(500, "sorry, server error"));
+     }
+  }
 }
 
 module.exports = TransactionController;

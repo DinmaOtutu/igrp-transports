@@ -12,6 +12,7 @@ const {
   getTransactions,
   getAgentTransaction,
   getVehicleTrips,
+  debitOffline
 } = TransactionController;
 
 // authenticate routes
@@ -20,6 +21,7 @@ router.use(auth);
 // routes
 router.post('/createTransaction', createTransaction);
 router.get('/transactions', getTransactions);
+router.put('/debitOffline', debitOffline);
 
 // number validation 
 router.get('/agentTransaction/:agentNumber', numberChecker, getAgentTransaction);
