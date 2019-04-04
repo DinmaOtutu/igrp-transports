@@ -20,67 +20,83 @@ class TransactionController {
    *@memberof TransactionController
    */
   static async createTransaction(req, res) {
-    const randomNumber = (min, max) =>
-      Math.floor(Math.random() * (max - min) + min);
-    const transID = randomNumber(1000, 99999999);
-     
+    try {
+      const randomNumber = (min, max) =>
+        Math.floor(Math.random() * (max - min) + min);
+      const transID = randomNumber(1000, 99999999);
+
       req.body.transID = `${Date.now()}-${transID}`;
 
-    const { phoneNumber, vrtID, tipperPrice } = req.body;
-    const agent = await User.findOne({
-      phoneNumber
-    });
-    const validCarNumber = await User.findOne({
-      vrtID
-    });
-
-  
-    if (!agent) {
-      return res
-        .status(404)
-        .json(responses.error(404, "sorry this agent does not exist"));
-    }
-    if (!validCarNumber) {
-      return res
-        .status(404)
-        .json(responses.error(404, "sorry this vehicle not exist"));
-    }
-    if (agent && validCarNumber && transID) {
-      
-      const { fullname, phoneNumber } = agent;
-      const transactionDetails = {
-        transactionID: req.body.transID,
-        vrtID,
-        tipperPrice,
-        agentName: fullname,
-        agentNumber: phoneNumber,
-        date: agent.date,
-        driverName: validCarNumber.fullname,
-        driverNumber: validCarNumber.phoneNumber,
-        vehicleNumber: validCarNumber.vehicleNumber
-      };
-      const createdTransaction = await Transaction.create(
-        transactionDetails
-      );
-
-      if (createdTransaction) {
+      const { phoneNumber, vrtID, tipperPrice } = req.body;
+      const agent = await User.findOne({
+        phoneNumber, vrtID
+      });
+      if (!agent) {
         return res
-          .status(201)
-          .json(
-            responses.success(
-              201,
-              "Successfully created a transaction",
-              transactionDetails
-            )
-          );
+          .status(404)
+          .json(responses.error(404, "sorry this agent does not exist"));
       }
-      return res
-        .status(400)
-        .json(responses.error(400, "failed to create transaction"));
+      if (!validCarNumber) {
+        return res
+          .status(404)
+          .json(responses.error(404, "sorry this vehicle not exist"));
+      }
+      if (agent && validCarNumber && transID) {
+        const wallet = await Wallet.findOne({ phoneNumber })
+        if (wallet.totalAmount <= 19.99) return res
+          .status(400)
+          .json(responses.error(400, "Insufficient balance"));
+
+        const { fullname, phoneNumber } = agent;
+        const transactionDetails = {
+          transactionID: req.body.transID,
+          vrtID,
+          tipperPrice,
+          agentName: fullname,
+          agentNumber: phoneNumber,
+          date: agent.date,
+          driverName: validCarNumber.fullname,
+          driverNumber: validCarNumber.phoneNumber,
+          vehicleNumber: validCarNumber.vehicleNumber
+        };
+        const createdTransaction = await Transaction.create(
+          transactionDetails
+        );
+
+        if (createdTransaction) {
+          const balance = Number(totalAmount) - Number(20)
+          await Wallet.findByIdAndUpdate(
+            {
+              phoneNumber
+            },
+            {
+              $set: {
+                totalAmount: balance
+              }
+            },
+            {
+              new: true
+            }
+          );
+          return res
+            .status(201)
+            .json(
+              responses.success(
+                201,
+                "Successfully created a transaction",
+                transactionDetails
+              )
+            );
+        }
+        return res
+          .status(400)
+          .json(responses.error(400, "failed to create transaction"));
+      }
+    } catch (error) {
+      return res.status(500).json(responses.error(500, "sorry, server error"));
     }
-    return res.status(500).json(responses.error(500, "sorry, server error"));
   }
-  
+
   /**
    *@description gets transactions
    *@static
@@ -91,13 +107,13 @@ class TransactionController {
   static async getTransactions(req, res) {
     try {
       const allTransactions = await Transaction.find({});
-  
+
       if (!allTransactions.length) {
         return res
           .status(404)
           .json(responses.error(404, "Sorry, no transactions created yet!"));
       }
-        if (allTransactions) {
+      if (allTransactions) {
         const returnedTransactions = allTransactions.map(
           transaction => ({
             id: transaction.id,
@@ -107,7 +123,7 @@ class TransactionController {
             vehicleNumber: transaction.vehicleNumber,
             agentNumber: transaction.agentNumber,
             vrtID: transaction.vrtID
-          })    
+          })
         );
         return res
           .status(200)
@@ -148,9 +164,9 @@ class TransactionController {
           )
         );
     }
-    
 
-   
+
+
     if (agent) {
       const retrivedAgent = agent.map(transactions => ({
         vehicleNumber: transactions.vehicleNumber,
@@ -158,7 +174,7 @@ class TransactionController {
         date: transactions.date,
         agentName: transactions.agentName,
         agentNumber: transactions.agentNumber,
-        vrtID:transactions.vrtID
+        vrtID: transactions.vrtID
       }));
       return res
         .status(200)
@@ -176,18 +192,18 @@ class TransactionController {
    *@returns {object} - null
    *@memberof TransactionController
    */
-    static async getVehicleTrips(req, res) {
+  static async getVehicleTrips(req, res) {
     const { vrtID } = req.params;
     const findVehicle = await Transaction.find({
       vrtID
     });
-      if (!findVehicle.length) {
+    if (!findVehicle.length) {
       return res
         .status(404)
         .json(responses.error(404, "sorry, this Vehicle has no trips yet"));
     }
-      if (findVehicle) {
-          const driverObject = findVehicle.map(singleVehicle => ({
+    if (findVehicle) {
+      const driverObject = findVehicle.map(singleVehicle => ({
         driverName: singleVehicle.drivername,
         vehicleNumber: singleVehicle.vehicleNumber,
         date: singleVehicle.date,
