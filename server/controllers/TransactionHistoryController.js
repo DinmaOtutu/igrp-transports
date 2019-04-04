@@ -57,7 +57,7 @@ class TransactionController {
         receiverTransaction
       };
     } catch (error) {
-      traceLogger(error);
+      return(error);
     }
   }
 
@@ -87,7 +87,7 @@ class TransactionController {
 
       return res.status(200).json(responses.success(200, 'Transaction history retrieved successfully', transactionHistory));
     } catch (error) {
-      traceLogger(error);
+     return(error);
     }
   }
 }

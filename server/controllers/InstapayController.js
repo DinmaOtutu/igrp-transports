@@ -32,7 +32,7 @@ class InstapayController {
         responses.success(200, 'success', banks)
       );
     } catch (error) {
-      tracelogger(error);
+      return(error);
     }
   }
 
@@ -91,7 +91,7 @@ class InstapayController {
         responses.success(200, 'success', transferResponse)
       );
     } catch (error) {
-      tracelogger(error);
+      return(error);
     }
   }
 
@@ -141,7 +141,7 @@ class InstapayController {
       res.status(500).json({
         message
       });
-      tracelogger(error);
+      return(error);
     }
   }
 

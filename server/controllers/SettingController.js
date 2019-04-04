@@ -60,7 +60,6 @@ class SettingController {
         );
       }
     } catch (error) {
-      traceLogger(error);
       return res.status(500).json(
         responses.error(500, 'Server error, failed to add bank details')
       );
@@ -118,7 +117,6 @@ class SettingController {
         responses.success(200, 'Bank data successfully removed', updatedProfile.banks)
       );
     } catch (error) {
-      traceLogger(error);
       return res.status(500).json(
         responses.error(500, 'Server error, failed to remove bank details')
       );

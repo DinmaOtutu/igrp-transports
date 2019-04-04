@@ -100,11 +100,6 @@ class WalletController {
       const {
         phoneNumber
       } = decoded;
-
-   const wallet = await Wallet.findOne({ phoneNumber });
-   if (!wallet) {
-      return res.status(400).json(responses.error(400, 'Unable to find user'));
-    }
       const {
         receiverNumber,
         passCode,
@@ -113,9 +108,7 @@ class WalletController {
       } = req.body;
 
       if (!receiverNumber.trim() || !amount || !passCode || !description) return res.status(400).json(responses.error(400, 'Please this field cannot be empty'));
-      if (phoneNumber.trim() === receiverNumber.trim()) return res.status(400).json(responses.error(400, 'Please you cannot send money to yourself'));
-
-
+      if (phoneNumber === receiverNumber.trim) return res.status(400).json(responses.error(400, 'Please you cannot send money to yourself'));
       const validatedSender = await Wallet.findOne({ phoneNumber });
       const validatedReceiver = await Wallet.findOne({ phoneNumber: receiverNumber });
       if (!validatedSender || !validatedReceiver) return res.status(404).json(responses.error(404, 'Please this wallet does not exist'));
@@ -174,9 +167,10 @@ class WalletController {
       };
       return res.status(200).json(responses.success(200, 'Money successfully sent!', data));
     } catch (error) {
-      tracelogger(error);
+     return console.log(error)
       return res.status(500).json(
         responses.error(500, 'Server error, failed to send money')
+        
       );
     }
   }
@@ -192,21 +186,11 @@ class WalletController {
    *@memberof walletController
    */
   static async moneyDeductions({
+    phoneNumber,
     senderNewBalance,
     receiverNumber,
     receiverNewBalance
   }) {
-    const jwttoken = req.headers.authorization || req.headers['x-access-token'];
-    const decoded = jwt.decode(jwttoken);
-
-    const {
-      phoneNumber
-    } = decoded;
-
- const wallet = await Wallet.findOne({ phoneNumber });
- if (!wallet) {
-    return res.status(400).json(responses.error(400, 'Unable to find user'));
-  }
     try {
       const updatedSender = await Wallet.findOneAndUpdate({
         phoneNumber
@@ -370,12 +354,13 @@ class WalletController {
         return res.status(400).json(responses.error(400, 'please activate your wallet'));
       }
       return res.status(200).json(
-        responses.success(200, 'Balance retrieved successfully', walletBalance)
+        responses.success(200, 'Balance retrieved successfully', wallet)
       );
     } catch (error) {
+      return console.log(error)
       // this will  be handled by the error handling middleware
       return res.status(500).json(
-        responses.error(500, 'Server error, failed to activate wallet'));
+        responses.error(500, 'Server error, failed get wallet balance'));
     }
   }
 
