@@ -29,8 +29,10 @@ class TransactionController {
 
       const { phoneNumber, vrtID, tipperPrice } = req.body;
       const agent = await User.findOne({
-        phoneNumber, vrtID
+        phoneNumber
       });
+      const validCarNumber = await User.findOne({vrtID})
+      
       if (!agent) {
         return res
           .status(404)
