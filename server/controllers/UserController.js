@@ -157,10 +157,10 @@ class UsersController {
       }
       const {
         phoneNumber,
+        password,
         fullname,
         address,
         email,
-        password,
         age,
         guarantorsFullName,
         guarantorsPhonenumber,
@@ -199,6 +199,7 @@ class UsersController {
         idNumber,
         role: "user"
       };
+      
       const createdAgent = await User.create(userObject);
       await WalletController.newWallet(phoneNumber);
       await Wallet.findOneAndUpdate( {
