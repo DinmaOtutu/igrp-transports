@@ -32,7 +32,7 @@ class InstapayController {
         responses.success(200, 'success', banks)
       );
     } catch (error) {
-      return(error);
+        return res.status(500).json(responses.error(500, 'Server error, attempt failed please try again'));
     }
   }
 
@@ -91,7 +91,7 @@ class InstapayController {
         responses.success(200, 'success', transferResponse)
       );
     } catch (error) {
-      return(error);
+        return res.status(500).json(responses.error(500, 'Server error, attempt failed please try again'));
     }
   }
 
@@ -141,7 +141,7 @@ class InstapayController {
       res.status(500).json({
         message
       });
-      return(error);
+      return res.status(500).json(responses.error(500, 'Server error, attempt failed please try again'));
     }
   }
 
@@ -185,7 +185,7 @@ class InstapayController {
         res.sendStatus(200);
       }
     } catch (error) {
-      return error;
+        return res.status(500).json(responses.error(500, 'Server error, attempt failed please try again'));
     }
   }
 

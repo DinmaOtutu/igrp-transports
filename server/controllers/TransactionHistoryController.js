@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const TransactionHistory = require('../models/TransactionHistory');
 const User = require('../models/Users');
 const responses = require('../utils/responses');
@@ -7,7 +8,7 @@ const responses = require('../utils/responses');
  * @description Defines the actions to for the wallet endpoints
  * @class TransactionController
  */
-class TransactionController {
+class TransactionHistoryController {
   /**
    *@description Creates new transaction for senders and receivers
    *@static
@@ -25,7 +26,6 @@ class TransactionController {
     status, beneficiary
   }) {
     try {
-      const senderUsername = await User.findOne({ phoneNumber });
       const newSenderTransaction = {
         phoneNumber,
         recipientNumber: receiverNumber,
@@ -57,7 +57,7 @@ class TransactionController {
         receiverTransaction
       };
     } catch (error) {
-      return(error);
+        return res.status(500).json(responses.error(500, 'Server error, attempt failed please try again'));
     }
   }
 
@@ -73,7 +73,6 @@ class TransactionController {
     try {
       const jwttoken = req.headers.authorization || req.headers['x-access-token'];
       const decoded = jwt.decode(jwttoken);
-
       const {
         phoneNumber
       } = decoded;
@@ -84,12 +83,11 @@ class TransactionController {
       if (!transactionHistory.length) {
         return res.status(404).json(responses.error(404, 'No transaction has been made on this account'));
       }
-
       return res.status(200).json(responses.success(200, 'Transaction history retrieved successfully', transactionHistory));
     } catch (error) {
-     return(error);
+        return res.status(500).json(responses.error(500, 'Server error, attempt failed please try again'));
     }
   }
 }
 
-module.exports = TransactionController;
+module.exports = TransactionHistoryController;
