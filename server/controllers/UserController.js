@@ -3,8 +3,10 @@ const bcrypt = require("bcrypt");
 const User = require("../models/Users");
 const responses = require("../utils/responses");
 const config = require("../config/index");
+const WalletController = require("../controllers/WalletController");
 const validateAgentInput = require("../middlewares/agentvalidation");
 const validateVehicleInput = require("../middlewares/vehicleValidation");
+const Wallet = require('../models/Wallet');
 const { JWT_SECRET } = config;
 /**
  * @description Defines the actions to for the users endpoints
@@ -32,6 +34,7 @@ class UsersController {
       });
       if (mongoUser === null) {
         await User.create(userObject);
+        await WalletController.newWallet(phoneNumber);
       }
     } catch (error) {
       return error;
@@ -196,6 +199,18 @@ class UsersController {
         role: "user"
       };
       const createdAgent = await User.create(userObject);
+      await WalletController.newWallet(phoneNumber);
+      await Wallet.findOneAndUpdate( {
+        phoneNumber
+      },
+      {
+        $set: {
+          isActivated: true
+        }
+      },
+      {
+        new: true
+      })
       if (createdAgent) {
         return res
           .status(201)

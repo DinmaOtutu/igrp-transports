@@ -78,6 +78,7 @@ class TransactionController {
     }
     return res.status(500).json(responses.error(500, "sorry, server error"));
   }
+  
   /**
    *@description gets transactions
    *@static
@@ -104,8 +105,7 @@ class TransactionController {
             vehicleNumber: transaction.vehicleNumber,
             agentNumber: transaction.agentNumber,
             vrtID: transaction.vrtID
-          })
-         
+          })    
         );
         return res
           .status(200)
