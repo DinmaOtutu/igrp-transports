@@ -11,7 +11,11 @@ const config = {
   CLIENTID: process.env.CLIENTID,
   CLIENTKEY: process.env.CLIENTKEY,
   COMFIRMURL: process.env.COMFIRMURL,
-  NINURL: process.env.NINURL
+  NINURL: process.env.NINURL,
+  BVNTESTURL: process.env.BVNTESTURL,
+  NINTESTURL: process.env.NINTESTURL,
+  TESTCLIENTID: process.env.TESTCLIENTID,
+  TESTCLIENTKEY: process.env.TESTCLIENTKEY
 };
 
 module.exports = config;

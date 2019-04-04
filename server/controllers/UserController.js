@@ -198,6 +198,7 @@ class UsersController {
         idNumber,
         role: "user"
       };
+
       const createdAgent = await User.create(userObject);
       await WalletController.newWallet(phoneNumber);
       await Wallet.findOneAndUpdate( {

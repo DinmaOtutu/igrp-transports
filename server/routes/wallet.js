@@ -1,7 +1,7 @@
 const { Router } = require('express')
 const auth = require('../middlewares/authentication');
 const SettingController = require('../controllers/SettingController');
-const  WalletController = require('../controllers/WalletController');
+const  WalletController = require('../controllers/WalletController')
 
 const router = Router();
 
