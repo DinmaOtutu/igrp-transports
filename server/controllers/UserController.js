@@ -189,7 +189,6 @@ class UsersController {
         fullname,
         phoneNumber,
         address,
-        bvn,
         email,
         password: bcrypt.hashSync(password, 10),
         age,
@@ -200,6 +199,7 @@ class UsersController {
         idNumber,
         role: "user"
       };
+
       const createdAgent = await User.create(userObject);
       await WalletController.newWallet(phoneNumber);
       await Wallet.findOneAndUpdate( {
