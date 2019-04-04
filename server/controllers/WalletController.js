@@ -167,7 +167,6 @@ class WalletController {
       };
       return res.status(200).json(responses.success(200, 'Money successfully sent!', data));
     } catch (error) {
-     return console.log(error)
       return res.status(500).json(
         responses.error(500, 'Server error, failed to send money')
         
@@ -357,7 +356,6 @@ class WalletController {
         responses.success(200, 'Balance retrieved successfully', wallet)
       );
     } catch (error) {
-      return console.log(error)
       // this will  be handled by the error handling middleware
       return res.status(500).json(
         responses.error(500, 'Server error, failed get wallet balance'));
