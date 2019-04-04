@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const Transaction = require("../models/Transaction");
 const responses = require("../utils/responses");
 const crypto = require('crypto');
@@ -21,18 +22,23 @@ class TransactionController {
    */
   static async createTransaction(req, res) {
     try {
+      const jwttoken = req.headers.authorization || req.headers['x-access-token'];
+      const decoded = jwt.decode(jwttoken);
+      const {
+        phoneNumber
+      } = decoded
       const randomNumber = (min, max) =>
         Math.floor(Math.random() * (max - min) + min);
       const transID = randomNumber(1000, 99999999);
 
       req.body.transID = `${Date.now()}-${transID}`;
-
-      const { phoneNumber, vrtID, tipperPrice } = req.body;
+    
+      const { vrtID, tipperPrice } = req.body;
       const agent = await User.findOne({
         phoneNumber
       });
       const validCarNumber = await User.findOne({vrtID})
-      
+
       if (!agent) {
         return res
           .status(404)
@@ -44,7 +50,7 @@ class TransactionController {
           .json(responses.error(404, "sorry this vehicle not exist"));
       }
       if (agent && validCarNumber && transID) {
-        const wallet = await Wallet.findOne({ phoneNumber })
+        const wallet = await Wallet.findOne({ phoneNumber: decoded.phoneNumber })
         if (wallet.totalAmount <= 19.99) return res
           .status(400)
           .json(responses.error(400, "Insufficient balance"));
@@ -66,7 +72,7 @@ class TransactionController {
         );
 
         if (createdTransaction) {
-          const balance = Number(totalAmount) - Number(20)
+          const balance = Number(wallet.totalAmount) - Number(20)
           const debitedWallet = await Wallet.findOneAndUpdate(
             {
               phoneNumber
@@ -95,6 +101,7 @@ class TransactionController {
           .json(responses.error(400, "failed to create transaction"));
       }
     } catch (error) {
+      return console.log(error)
       return res.status(500).json(responses.error(500, "sorry, server error"));
     }
   }
