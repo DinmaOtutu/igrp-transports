@@ -34,7 +34,9 @@ class UsersController {
       });
       if (mongoUser === null) {
         await User.create(userObject);
-        await WalletController.newWallet(phoneNumber);
+
+       const wall= await WalletController.newWallet(phoneNumber);
+       console.log(wall, 'hereeeeeeeeeeeeeeee')
       }
     } catch (error) {
       return error;
