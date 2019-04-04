@@ -38,6 +38,7 @@ const transactionSchema = new Schema({
   vrtID: {
     type: Number,
     unique: true,
+    sparse: true,
     description:
       "This vehicle road tax ID has already been taken by another driver"
   },
