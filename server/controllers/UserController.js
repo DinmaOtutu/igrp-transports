@@ -187,7 +187,6 @@ class UsersController {
         fullname,
         phoneNumber,
         address,
-        bvn,
         email,
         password: bcrypt.hashSync(password, 10),
         age,
