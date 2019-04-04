@@ -65,7 +65,7 @@ class TransactionController {
 
         if (createdTransaction) {
           const balance = Number(totalAmount) - Number(20)
-          await Wallet.findByIdAndUpdate(
+          const debitedWallet = await Wallet.findByIdAndUpdate(
             {
               phoneNumber
             },
@@ -84,7 +84,7 @@ class TransactionController {
               responses.success(
                 201,
                 "Successfully created a transaction",
-                transactionDetails
+                {transactionDetails, debitedWallet: debitedWallet.totalAmount}
               )
             );
         }
