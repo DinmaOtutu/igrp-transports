@@ -34,9 +34,8 @@ class UsersController {
       });
       if (mongoUser === null) {
         await User.create(userObject);
-
-       const wall= await WalletController.newWallet(phoneNumber);
-       console.log(wall, 'hereeeeeeeeeeeeeeee')
+ await WalletController.newWallet(phoneNumber);
+      
       }
     } catch (error) {
       return error;
@@ -189,7 +188,6 @@ class UsersController {
         fullname,
         phoneNumber,
         address,
-        bvn,
         email,
         password: bcrypt.hashSync(password, 10),
         age,
