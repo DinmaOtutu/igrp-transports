@@ -27,6 +27,10 @@ const walletSchema = new Schema({
   securityAnswer: {
     type: String
   },
+  date: {
+    type: Date,
+    default: new Date().toString()
+  },
 });
 
 const Wallet = mongoose.model('wallet', walletSchema);

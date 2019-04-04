@@ -41,6 +41,10 @@ const transactionSchema = new Schema({
     description:
       "This vehicle road tax ID has already been taken by another driver"
   },
+  date: {
+    type: Date,
+    default: new Date().toString()
+  },
   vehicleType: { type: String, enum: ["tipper", "taxi", "keke", "okada"] }
 });
 

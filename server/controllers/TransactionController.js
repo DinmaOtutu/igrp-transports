@@ -256,7 +256,7 @@ const wallet = await Wallet.findOne({phoneNumber})
        return res
        .status(200)
        .json(
-         responses.success(200, "Balance updated successfully", {walletBalance: updatedBalance.totalAmount})
+         responses.success(200, "Balance updated successfully", {walletBalance: updatedBalance.totalAmount, date: updatedBalance.date})
        );
      } catch(error) {
       return res.status(500).json(responses.error(500, "sorry, server error"));
