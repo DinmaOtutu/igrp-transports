@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const Wallet = require('../models/Wallet');
 const responses = require('../utils/responses');
 const DataProtector = require('../utils/dataProtector');
+const TransactionHistoryController = require('../controllers/TransactionHistoryController');
 
 /**
  * @description Defines the actions to for the wallet endpoints
@@ -82,6 +83,103 @@ class WalletController {
     }
   }
 
+   /**
+   *@description Send money to connections
+   *@static
+   *@param  {Object} req - request
+   *@param  {Object} res - request
+   *@returns {object} - null
+   *@memberof walletController
+   */
+  static async sendMoney(req, res) {
+    try {
+
+      const jwttoken = req.headers.authorization || req.headers['x-access-token'];
+      const decoded = jwt.decode(jwttoken);
+
+      const {
+        phoneNumber
+      } = decoded;
+
+   const wallet = await Wallet.findOne({ phoneNumber });
+   if (!wallet) {
+      return res.status(400).json(responses.error(400, 'Unable to find user'));
+    }
+      const {
+        receiverNumber,
+        passCode,
+        amount,
+        description
+      } = req.body;
+
+      if (!receiverNumber.trim() || !amount || !passCode || !description) return res.status(400).json(responses.error(400, 'Please this field cannot be empty'));
+      if (phoneNumber.trim() === receiverNumber.trim()) return res.status(400).json(responses.error(400, 'Please you cannot send money to yourself'));
+
+
+      const validatedSender = await Wallet.findOne({ phoneNumber });
+      const validatedReceiver = await Wallet.findOne({ phoneNumber: receiverNumber });
+      if (!validatedSender || !validatedReceiver) return res.status(404).json(responses.error(404, 'Please this wallet does not exist'));
+      if (!validatedSender.isActivated) return res.status(401).json(responses.error(401, 'Please activate your wallet to send money'));
+      if (!bcrypt.compareSync(passCode, validatedSender.passCode)) {
+        return res.status(403).json(
+          responses.error(403, 'sorry, incorrect passcode')
+        );
+      }
+      if (parseFloat(amount, 10) === 0) {
+        return res.status(400).json(responses.error(400, 'Please you cannot send this amount'));
+      }
+
+      if (parseFloat(amount, 10) > validatedSender.totalAmount) {
+        return res.status(400).json(responses.error(400, 'Insufficient funds, please fund your account'));
+      }
+
+      const senderNewBalance = validatedSender.totalAmount - parseFloat(amount, 10);
+      const receiverNewBalance = validatedReceiver.totalAmount + parseFloat(amount, 10);
+      validatedSender.totalAmount = parseFloat(senderNewBalance, 10);
+      validatedReceiver.totalAmount = parseFloat(receiverNewBalance, 10);
+      const {
+        updatedSender,
+        updatedReceiver
+      } = await WalletController
+        .moneyDeductions({
+          phoneNumber,
+          senderNewBalance,
+          receiverNumber,
+          receiverNewBalance
+        });
+
+
+      if (!updatedSender || !updatedReceiver) {
+        const reverseSenderMoney = validatedSender.totalAmount + parseFloat(amount, 10);
+        const reverseReceiverMoney = validatedReceiver.totalAmount - parseFloat(amount, 10);
+        validatedSender.totalAmount = parseFloat(reverseSenderMoney, 10);
+        validatedReceiver.totalAmount = parseFloat(reverseReceiverMoney, 10);
+      }
+
+      const {
+        senderTransaction,
+        receiverTransaction
+      } = await TransactionHistoryController
+        .createTransaction({
+          phoneNumber,
+          receiverNumber,
+          amount,
+          status: 'successful'
+        });
+
+      if (!senderTransaction || !receiverTransaction) return res.status(500).json(responses.error(500, 'Failed to create transaction history!'));
+      const data = {
+        amount: parseFloat(amount, 10),
+        walletBalance: validatedSender.totalAmount
+      };
+      return res.status(200).json(responses.success(200, 'Money successfully sent!', data));
+    } catch (error) {
+      tracelogger(error);
+      return res.status(500).json(
+        responses.error(500, 'Server error, failed to send money')
+      );
+    }
+  }
 
   /**
    *@description Debits and credits users
@@ -94,14 +192,24 @@ class WalletController {
    *@memberof walletController
    */
   static async moneyDeductions({
-    senderNumber,
     senderNewBalance,
     receiverNumber,
     receiverNewBalance
   }) {
+    const jwttoken = req.headers.authorization || req.headers['x-access-token'];
+    const decoded = jwt.decode(jwttoken);
+
+    const {
+      phoneNumber
+    } = decoded;
+
+ const wallet = await Wallet.findOne({ phoneNumber });
+ if (!wallet) {
+    return res.status(400).json(responses.error(400, 'Unable to find user'));
+  }
     try {
       const updatedSender = await Wallet.findOneAndUpdate({
-        phoneNumber: senderNumber
+        phoneNumber
       }, {
         totalAmount: senderNewBalance
       }, {
@@ -247,10 +355,13 @@ class WalletController {
      *@memberof UsersController
      */
   static async checkBalance(req, res) {
-    const { phoneNumber } = req.params;
-    const walletBalance = await Wallet.findOne({ phoneNumber });
     try {
-      const wallet = await Wallet.findOne({ phoneNumber: req.params.phoneNumber })
+      const jwttoken = req.headers.authorization || req.headers['x-access-token'];
+      const decoded = jwt.decode(jwttoken);
+      const {
+        phoneNumber
+      } = decoded
+      const wallet = await Wallet.findOne({ phoneNumber })
         .select('totalAmount');
       if (!wallet) {
         return res.status(404).json(responses.error(404, 'Wallet Not Found '));

@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const User = require("../models/Users.js");
 const axios = require('axios');
 const config = require('../config/index')
+const Wallet = require('../models/Wallet');
 
 /**
  * @description Defines the actions to for the users endpoints
@@ -45,6 +46,7 @@ class TransactionController {
         .json(responses.error(404, "sorry this vehicle not exist"));
     }
     if (agent && validCarNumber && transID) {
+      
       const { fullname, phoneNumber } = agent;
       const transactionDetails = {
         transactionID: req.body.transID,

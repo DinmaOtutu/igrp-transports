@@ -15,7 +15,9 @@ const config = {
   BVNTESTURL: process.env.BVNTESTURL,
   NINTESTURL: process.env.NINTESTURL,
   TESTCLIENTID: process.env.TESTCLIENTID,
-  TESTCLIENTKEY: process.env.TESTCLIENTKEY
+  TESTCLIENTKEY: process.env.TESTCLIENTKEY,
+  BANK_URL: process.env.BANK_URL,
+  INNSTAPAY_SECRET_KEY_TEST: process.env.INNSTAPAY_SECRET_KEY_TEST
 };
 
 module.exports = config;
