@@ -439,6 +439,7 @@ class UsersController {
     const user = await User.findOne({
       phoneNumber
     });
+    const wallet = await Wallet.findOne({ phoneNumber })
     if (!user) {
       return res
         .status(404)
@@ -463,7 +464,8 @@ class UsersController {
       return res.status(200).json(
         responses.success(200, "Agent successfully logged in", {
           user,
-          token
+          token,
+          walletBalance: wallet.totalAmount, 
         })
       );
     }
