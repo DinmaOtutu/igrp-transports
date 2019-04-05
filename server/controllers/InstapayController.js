@@ -32,6 +32,7 @@ class InstapayController {
         responses.success(200, 'success', banks)
       );
     } catch (error) {
+      console.log(error)
         return res.status(500).json(responses.error(500, 'Server error, attempt failed please try again'));
     }
   }

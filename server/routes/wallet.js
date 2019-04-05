@@ -12,6 +12,11 @@ const { addBankData, removeBankData } = SettingController;
 const { getBankList, creditWallet, bankTransfer, webHook } = InstapayController;
 const { getTransactionHistory } = TransactionHistoryController;
 
+// webhook 
+
+router.post('/webhook', webHook);
+
+// authenticated routes
 router.use(auth);
 router.put('/addbank', addBankData);
 router.put('/removebank', removeBankData);
