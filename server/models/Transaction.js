@@ -16,10 +16,6 @@ const transactionSchema = new Schema({
     type: Number,
     enum: [250, 500, 1000]
   },
-  date: {
-    type: Date,
-    default: new Date().toString()
-  },
   vehicleNumber: {
     type: Number
   },

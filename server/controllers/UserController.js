@@ -6,7 +6,7 @@ const config = require("../config/index");
 const WalletController = require("../controllers/WalletController");
 const validateAgentInput = require("../middlewares/agentvalidation");
 const validateVehicleInput = require("../middlewares/vehicleValidation");
-const Wallet = require('../models/Wallet');
+const Wallet = require("../models/Wallet");
 const { JWT_SECRET } = config;
 /**
  * @description Defines the actions to for the users endpoints
@@ -34,8 +34,7 @@ class UsersController {
       });
       if (mongoUser === null) {
         await User.create(userObject);
- await WalletController.newWallet(phoneNumber);
-      
+        await WalletController.newWallet(phoneNumber);
       }
     } catch (error) {
       return error;
@@ -201,17 +200,19 @@ class UsersController {
 
       const createdAgent = await User.create(userObject);
       await WalletController.newWallet(phoneNumber);
-      await Wallet.findOneAndUpdate( {
-        phoneNumber
-      },
-      {
-        $set: {
-          isActivated: true
+      await Wallet.findOneAndUpdate(
+        {
+          phoneNumber
+        },
+        {
+          $set: {
+            isActivated: true
+          }
+        },
+        {
+          new: true
         }
-      },
-      {
-        new: true
-      })
+      );
       if (createdAgent) {
         return res
           .status(201)
@@ -439,7 +440,7 @@ class UsersController {
     const user = await User.findOne({
       phoneNumber
     });
-    const wallet = await Wallet.findOne({ phoneNumber })
+    const wallet = await Wallet.findOne({ phoneNumber });
     if (!user) {
       return res
         .status(404)
@@ -465,7 +466,7 @@ class UsersController {
         responses.success(200, "Agent successfully logged in", {
           user,
           token,
-          walletBalance: wallet.totalAmount, 
+          walletBalance: wallet.totalAmount
         })
       );
     }
@@ -543,21 +544,8 @@ class UsersController {
           .status(400)
           .json(responses.error(400, "Sorry, this vehicle number is taken"));
       }
-      const dlicense = await User.findOne({ driversLicence });
-      if (dlicense) {
-        return res
-          .status(400)
-          .json(
-            responses.error(400, "Sorry, this driver's license already exists")
-          );
-      }
-      if (
-        !vehicle &&
-        !theVehicleNumber &&
-        !vehicleTaxID &&
-        !dlicense &&
-        !phoneNumb
-      ) {
+
+      if (!vehicle && !theVehicleNumber && !vehicleTaxID && !phoneNumb) {
         const vehicleObject = {
           phoneNumber,
           vehicleType,
@@ -776,6 +764,42 @@ class UsersController {
       return error;
     }
   }
+
+ 
+
+  /**
+   *@description deletes a  vehicle
+   *@static
+   *@param  {Object} res - response
+   *@returns {object} - null
+   *@memberof UserController
+   */
+
+  static async deleteVehicle(req, res) {
+    try {
+      const { phoneNumber } = req.params;
+
+    const plateNum = await User.findOneAndDelete({ phoneNumber });
+    if (!plateNum) {
+      return res
+        .status(400)
+        .json(responses.error(400, " The vehicle does not exist"));
+    }
+
+    if (plateNum) {
+      return res
+        .status(200)
+        .json(responses.success(200, "Vehicle successfully deleted", plateNum));
+    }
+    return res
+      .status(500)
+      .json(responses.error(500, "Failed to delete, server error"));
+
+    } catch (error) {
+      return error;
+    }
+  }
+
 }
 
 module.exports = UsersController;
