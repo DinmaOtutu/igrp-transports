@@ -33,11 +33,11 @@ router.post('/superLogin', loginSuperAgent);
 router.use(auth);
 // routes that require token
 
-router.patch('/updateAgent', updateAgent);
+router.put("/updateAgent/:User_id", updateAgent);
 router.put("/updateVehicle/:User_id", updateVehicle);
 router.post("/createAgent", createAgent);
 
-router.delete('/deleteAgent/:phoneNumber', deleteAgent);
+router.delete("/deleteAgent/:User_id", deleteAgent);
 router.patch('/deactivate', deactivateAgent);
 router.patch('/activate', activateAgent);
 router.post("/createVehicle", createVehicle);

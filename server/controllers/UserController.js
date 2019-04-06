@@ -268,6 +268,8 @@ class UsersController {
    *@memberof UserController
    */
   static async updateAgent(req, res) {
+
+    const { User_id }= req.params;
     const {
       phoneNumber,
       fullname,
@@ -280,12 +282,13 @@ class UsersController {
       meansOfId,
       idNumber
     } = req.body;
-    const userToUpdate = await User.findOneAndUpdate(
+    const userToUpdate = await User.findByIdAndUpdate(
       {
-        phoneNumber
+        _id: User_id 
       },
       {
         $set: {
+          phoneNumber,
           fullname,
           address,
           email,
@@ -326,9 +329,9 @@ class UsersController {
    *@memberof UserController
    */
   static async deleteAgent(req, res) {
-    const { phoneNumber } = req.params;
-    const user = await User.findOneAndDelete({
-      phoneNumber
+    const { User_id } = req.params;
+    const user = await User.findByIdAndDelete({
+      _id: User_id
     });
     if (!user) {
       return res
