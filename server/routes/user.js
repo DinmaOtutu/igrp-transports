@@ -43,7 +43,7 @@ router.patch('/activate', activateAgent);
 router.post("/createVehicle", createVehicle);
 router.get('/agents', allAgents);
 router.get("/vehicles", allVehicle);
-router.delete("/deleteVehicle/:phoneNumber", deleteVehicle);
+router.delete("/deleteVehicle/:User_id", deleteVehicle);
 
 router.patch('/updateId', agentDeviceNumber);
 
