@@ -42,7 +42,7 @@ const transactionSchema = new Schema({
     type: Date,
     default: new Date().toString()
   },
-  vehicleType: { type: String, enum: ["tipper", "taxi", "keke", "okada"] }
+  vehicleType: { type: String, enum: ["tipper", "taxi", "keke", "okada"],uppercase:true }
 });
 
 const Transaction = mongoose.model('transaction', transactionSchema);
