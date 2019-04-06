@@ -774,9 +774,10 @@ class UsersController {
 
   static async deleteVehicle(req, res) {
     try {
-      const { phoneNumber } = req.params;
+      const { User_id } = req.params;
 
-    const plateNum = await User.findOneAndDelete({ phoneNumber });
+      const plateNum = await User.findByIdAndDelete({ _id: User_id });
+
     if (!plateNum) {
       return res
         .status(400)
