@@ -688,15 +688,11 @@ class UsersController {
     return res.status(500).json(responses.error(500, "Sorry, server error!"));
   }
 
-  /**
-   *@description update vehicle
-   *@static
-   *@param  {Object} res - response
-   *@returns {object} - null
-   *@memberof UserController
-   */
+ 
+
   static async updateVehicle(req, res) {
     try {
+      const {User_id}= req.params;
       const {
         phoneNumber,
         vehicleType,
@@ -714,9 +710,10 @@ class UsersController {
         InsuranceExpDate,
         locationOfTransaction
       } = req.body;
-      const vehicleToUpdate = await User.findOneAndUpdate(
+      const vehicleToUpdate = await User.findByIdAndUpdate(
         {
-          vrtID
+         
+         _id: User_id
         },
         {
           $set: {
@@ -731,6 +728,7 @@ class UsersController {
             chasisNo,
             engineNumber,
             vehicleMake,
+            vrtID,
             RoadWorthinessExpDate,
             InsuranceExpDate,
             locationOfTransaction
@@ -765,7 +763,6 @@ class UsersController {
     }
   }
 
- 
 
   /**
    *@description deletes a  vehicle

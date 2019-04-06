@@ -34,7 +34,7 @@ router.use(auth);
 // routes that require token
 
 router.patch('/updateAgent', updateAgent);
-router.put("/updateVehicle", updateVehicle);
+router.put("/updateVehicle/:User_id", updateVehicle);
 router.post("/createAgent", createAgent);
 
 router.delete('/deleteAgent/:phoneNumber', deleteAgent);
