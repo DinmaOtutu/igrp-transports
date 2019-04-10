@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require('mongoose-paginate');
 
 const { Schema } = mongoose;
 const userSchema = new Schema({
@@ -129,6 +130,8 @@ const userSchema = new Schema({
     description: "vehicle type can either be tipper, taxi, keke or okada"
   }
 });
+
+userSchema.plugin(mongoosePaginate);
 
 const User = mongoose.model("user", userSchema);
 
