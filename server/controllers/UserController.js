@@ -595,9 +595,20 @@ class UsersController {
    */
   static async allAgents(req, res) {
     try {
-      const agents = await User.find({
-        role: "user"
-      });
+
+
+      const { pageNo, perPage } = req.query;
+
+
+
+      if (parseInt(pageNo) < 0 || parseInt(pageNo) === 0) {
+        return res.status(404).json(responses.error(404, 'invalid page number'));
+      }
+      const query = {};
+      query.skip = perPage * (pageNo - 1)
+      query.limit = (perPage, 10)
+      const agents = await User.find({ role: 'driver' }, {}, query);
+      
       if (agents.length === 0) {
         return res
           .status(404)
@@ -623,23 +634,44 @@ class UsersController {
    *@memberof UserController
    */
   static async allVehicle(req, res) {
-    const vehicle = await User.find({
-      role: "driver"
-    });
-    if (!vehicle.length) {
-      return res
-        .status(404)
-        .json(responses.error(404, "Sorry, no vehicles created yet!"));
+  
+    const { pageNo, perPage } = req.query;
+   
+  
+
+    if (parseInt(pageNo) < 0 || parseInt(pageNo) === 0 ){
+  return res.status(404).json(responses.error(404, 'invalid page number'));
+}
+    const query = {};
+    query.skip = perPage * (pageNo - 1)
+    query.limit = (perPage,10)
+    const vehicle = await User.find({ role: 'driver' },{}, query);
+      if (!vehicle.length) {
+        return res
+          .status(404)
+          .json(responses.error(404, "Sorry, no vehicles created yet!"));
+      }
+      if (vehicle) {
+        return res
+          .status(200)
+          .json(
+            responses.success(200, "Successfully retrieved vehicles", vehicle)
+          );
+      }
+      return res.status(500).json(responses.error(500, "Sorry, server error!"));
     }
-    if (vehicle) {
-      return res
-        .status(200)
-        .json(
-          responses.success(200, "Successfully retrieved vehicles", vehicle)
-        );
-    }
-    return res.status(500).json(responses.error(500, "Sorry, server error!"));
-  }
+    
+   
+
+
+  // MyModel.paginate({ }, 2, 10, function(error, pageCount, paginatedResults) {
+  //   if (error) {
+  //     console.error(error);
+  //   } else {
+  //     console.log('Pages:', pageCount);
+  //     console.log(paginatedResults);
+  //   }
+  // }
 
   /**
    *@description get a single agent
