@@ -607,7 +607,7 @@ class UsersController {
       const query = {};
       query.skip = perPage * (pageNo - 1)
       query.limit = (perPage, 10)
-      const agents = await User.find({ role: 'driver' }, {}, query);
+      const agents = await User.find({ role: 'user' }, {}, query);
       
       if (agents.length === 0) {
         return res
@@ -661,18 +661,6 @@ class UsersController {
       return res.status(500).json(responses.error(500, "Sorry, server error!"));
     }
     
-   
-
-
-  // MyModel.paginate({ }, 2, 10, function(error, pageCount, paginatedResults) {
-  //   if (error) {
-  //     console.error(error);
-  //   } else {
-  //     console.log('Pages:', pageCount);
-  //     console.log(paginatedResults);
-  //   }
-  // }
-
   /**
    *@description get a single agent
    *@static
