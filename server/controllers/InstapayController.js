@@ -9,8 +9,8 @@ const config = require('../config/index');
 const { INNSTAPAY_SECRET_KEY_TEST, BANK_URL } = config;
 
 /**
- * @description crediting, debiting, get all banks
- * @class InstapayController
+ * @description Defines the actions to for the wallet endpoints
+ * @class WalletController
  */
 class InstapayController {
 /**
@@ -58,7 +58,6 @@ class InstapayController {
           lastName,
           phone
         }, callbackUrl
-
       } = req.body;
       req.body.ref = `${Date.now()}-${ref}`;
 
@@ -156,6 +155,7 @@ class InstapayController {
     */
   static async webHook(req, res) {
     try {
+      console.log(req.body.data, '44444444444444')
       const phone = req.body.data.customer ? req.body.data.customer.phone : null;
       const firstName = req.body.data.customer ? req.body.data.customer.firstName : null;
       const lastName = req.body.data.customer ? req.body.data.customer.lastName : null;
@@ -173,19 +173,22 @@ class InstapayController {
         status,
         merchantReference: [reference]
       };
-      if (status === 'successful' && notifcation_type === 'transaction') {
+      if (req.body.data.status === 'successful' && req.body.notifcation_type === 'transaction') {
         await InstapayController.updateBalanceAndHistoryCredit(
           res, newSenderTransaction, phone, amount, type, reference, status
         );
-        res.sendStatus(200);
+        console.log(amount, 'amountttttttttttttttttttt')
+        return res.status(200).send('ok');
       }
-      if (status === 'successful' && notifcation_type === 'transfer') {
+      if (req.body.data.status === 'successful' && req.body.notifcation_type === 'transfer') {
         await InstapayController.updateBalanceAndHistoryDebit(
           res, newSenderTransaction, phone, amount, type, reference, status
         );
-        res.sendStatus(200);
+        return res.status(200).send('ok');
       }
+      return res.status(200).send('ok');
     } catch (error) {
+      console.log(error)
         return res.status(500).json(responses.error(500, 'Server error, attempt failed please try again'));
     }
   }
@@ -238,13 +241,17 @@ class InstapayController {
   static async updateBalanceAndHistoryCredit(
     res, phone, amount
   ) {
+    console.log(amount, 'amounttttt2222222222ttttttttttttttt')
+
     let balance;
     const retrievedWallet = await Wallet.findOne({ phoneNumber: phone });
+    console.log(retrievedWallet, '....................')
     const {
       totalAmount,
     } = retrievedWallet;
     // eslint-disable-next-line prefer-const
     balance = totalAmount + amount;
+    console.log(balance, 'balannnnnnnnnnncccceeeee')
     await Wallet.findOneAndUpdate({
       phoneNumber: retrievedWallet.phoneNumber
     }, {
