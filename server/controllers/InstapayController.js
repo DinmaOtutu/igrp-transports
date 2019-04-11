@@ -13,14 +13,14 @@ const { INNSTAPAY_SECRET_KEY_TEST, BANK_URL } = config;
  * @class WalletController
  */
 class InstapayController {
-/**
-   *@description get banks
-    *@static
-    *@param  {Object} req - request
-    *@param  {object} res - response
-    *@returns {object} - status code, message and created wallet
-    *@memberof InstapayController
-    */
+  /**
+     *@description get banks
+      *@static
+      *@param  {Object} req - request
+      *@param  {object} res - response
+      *@returns {object} - status code, message and created wallet
+      *@memberof InstapayController
+      */
   static async getBankList(req, res) {
     try {
       const banks = (await axios.get(`${BANK_URL}/banks`, {
@@ -32,8 +32,7 @@ class InstapayController {
         responses.success(200, 'success', banks)
       );
     } catch (error) {
-      console.log(error)
-        return res.status(500).json(responses.error(500, 'Server error, attempt failed please try again'));
+      return res.status(500).json(responses.error(500, 'Server error, attempt failed please try again'));
     }
   }
 
@@ -91,7 +90,7 @@ class InstapayController {
         responses.success(200, 'success', transferResponse)
       );
     } catch (error) {
-        return res.status(500).json(responses.error(500, 'Server error, attempt failed please try again'));
+      return res.status(500).json(responses.error(500, 'Server error, attempt failed please try again'));
     }
   }
 
@@ -155,41 +154,32 @@ class InstapayController {
     */
   static async webHook(req, res) {
     try {
-      console.log(req.body.data, '44444444444444')
       const phone = req.body.data.customer ? req.body.data.customer.phone : null;
       const firstName = req.body.data.customer ? req.body.data.customer.firstName : null;
       const lastName = req.body.data.customer ? req.body.data.customer.lastName : null;
       const { amount } = req.body.data;
       const reference = req.body.data.transactionReference;
-      const { notifcation_type } = req.body;
+      const { notification_type } = req.body;
       const { status } = req.body.data;
-
-      const type = req.body.notification_type;
       const newSenderTransaction = {
         phoneNumber: phone,
         amount,
         firstName,
         lastName,
         status,
-        merchantReference: [reference]
+        merchantReference: [reference],
+        notification_type
       };
-      if (req.body.data.status === 'successful' && req.body.notifcation_type === 'transaction') {
-        await InstapayController.updateBalanceAndHistoryCredit(
-          res, newSenderTransaction, phone, amount, type, reference, status
-        );
-        console.log(amount, 'amountttttttttttttttttttt')
-        return res.status(200).send('ok');
-      }
-      if (req.body.data.status === 'successful' && req.body.notifcation_type === 'transfer') {
-        await InstapayController.updateBalanceAndHistoryDebit(
-          res, newSenderTransaction, phone, amount, type, reference, status
-        );
-        return res.status(200).send('ok');
-      }
+
+      await InstapayController.updateBalanceAndHistoryCredit(
+        res, newSenderTransaction, phone, amount, notification_type, reference, status,
+      );
+      await InstapayController.updateBalanceAndHistoryDebit(
+        res, newSenderTransaction, phone, amount, notification_type, reference, status,
+      );
       return res.status(200).send('ok');
     } catch (error) {
-      console.log(error)
-        return res.status(500).json(responses.error(500, 'Server error, attempt failed please try again'));
+      return res.status(500).json(responses.error(500, 'Server error, attempt failed please try again'));
     }
   }
 
@@ -207,22 +197,24 @@ class InstapayController {
    *@memberof walletController
    */
   static async updateBalanceAndHistoryDebit(
-    res, phone, amount
+    res, newSenderTransaction, phone, amount, notification_type, reference, status,
   ) {
     let balance;
-    const retrievedWallet = await Wallet.findOne({ phoneNumber: phone });
-    const {
-      totalAmount,
-    } = retrievedWallet;
-    // eslint-disable-next-line prefer-const
-    balance = totalAmount - amount;
-    await Wallet.findOneAndUpdate({
-      phoneNumber: retrievedWallet.phoneNumber
-    }, {
-      totalAmount: balance
-    }, {
-      new: true
-    });
+    if (status === 'successful' && notification_type === 'transfer') {
+      const retrievedWallet = await Wallet.findOne({ phoneNumber: phone });
+      const {
+        totalAmount,
+      } = retrievedWallet;
+      // eslint-disable-next-line prefer-const
+      balance = totalAmount - amount;
+      await Wallet.findOneAndUpdate({
+        phoneNumber: retrievedWallet.phoneNumber
+      }, {
+          totalAmount: balance
+        }, {
+          new: true
+        });
+    }
   }
 
   /**
@@ -239,26 +231,24 @@ class InstapayController {
    *@memberof walletController
    */
   static async updateBalanceAndHistoryCredit(
-    res, phone, amount
+    res, newSenderTransaction, phone, amount, notification_type, reference, status,
   ) {
-    console.log(amount, 'amounttttt2222222222ttttttttttttttt')
-
     let balance;
-    const retrievedWallet = await Wallet.findOne({ phoneNumber: phone });
-    console.log(retrievedWallet, '....................')
-    const {
-      totalAmount,
-    } = retrievedWallet;
-    // eslint-disable-next-line prefer-const
-    balance = totalAmount + amount;
-    console.log(balance, 'balannnnnnnnnnncccceeeee')
-    await Wallet.findOneAndUpdate({
-      phoneNumber: retrievedWallet.phoneNumber
-    }, {
-      totalAmount: balance
-    }, {
-      new: true
-    });
+    if (status === 'successful' && notification_type === 'transaction') {
+      const retrievedWallet = await Wallet.findOne({ phoneNumber: phone });
+      const {
+        totalAmount,
+      } = retrievedWallet;
+      // eslint-disable-next-line prefer-const
+      balance = totalAmount + amount;
+      await Wallet.findOneAndUpdate({
+        phoneNumber: retrievedWallet.phoneNumber
+      }, {
+          totalAmount: balance
+        }, {
+          new: true
+        });
+    }
   }
 }
 
