@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require('mongoose-paginate');
 
 const { Schema } = mongoose;
 const userSchema = new Schema({
@@ -24,9 +25,9 @@ const userSchema = new Schema({
   address: {
     type: String
   },
-banks: {
-  type: Array
-},
+  banks: {
+    type: Array
+  },
   email: {
     type: String,
     unique: true,
@@ -47,7 +48,12 @@ banks: {
   },
   meansOfId: {
     type: String,
-    enum: ['voters card','international passport','national id card','drivers license']
+    enum: [
+      "voters card",
+      "international passport",
+      "national id card",
+      "drivers license"
+    ]
   },
   idNumber: {
     type: String
@@ -64,10 +70,9 @@ banks: {
     type: Boolean,
     default: false
   },
-    vehicleOwnerName: {
-        type: String
-
-    },
+  vehicleOwnerName: {
+    type: String
+  },
   vehicleOwnerAdress: {
     type: String
   },
@@ -89,7 +94,8 @@ banks: {
   vrtID: {
     type: Number,
     unique: true,
-    description: "This vehicle road tax ID has already been taken by another driver"
+    description:
+      "This vehicle road tax ID has already been taken by another driver"
   },
   RoadWorthinessExpDate: {
     type: String
@@ -115,7 +121,8 @@ banks: {
   },
   plateNumber: {
     type: String,
-    description: "this plateNumber has been used by another driver"
+    description: "this plateNumber has been used by another driver",
+    unique:true
   },
   vehicleType: {
     type: String,
@@ -123,6 +130,8 @@ banks: {
     description: "vehicle type can either be tipper, taxi, keke or okada"
   }
 });
+
+userSchema.plugin(mongoosePaginate);
 
 const User = mongoose.model("user", userSchema);
 
