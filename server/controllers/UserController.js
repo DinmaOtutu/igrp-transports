@@ -619,7 +619,7 @@ class UsersController {
 
         return res
           .status(200)
-          .json(responses.success(200, "Agents retrieved succssfully", {agents, query}));
+          .json(responses.success(200, "Agents retrieved succssfully", agents));
 
       }
      
@@ -668,14 +668,17 @@ class UsersController {
         return res
           .status(200)
           .json(
-            responses.success(200, "Successfully retrieved vehicles", {vehicle, query})
+            responses.success(200, "Successfully retrieved vehicles", vehicle)
           );
       }
       return res.status(500).json(responses.error(500, "Sorry, server error!"));
     }
     
+<<<<<<< HEAD
+=======
   
 
+>>>>>>> f322f19277732cf9bb82026ddea98af004f7c2b7
   /**
    *@description get a single agent
    *@static
