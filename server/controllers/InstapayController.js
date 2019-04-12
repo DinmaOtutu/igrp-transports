@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const Wallet = require('../models/Wallet');
 const responses = require('../utils/responses');
 const config = require('../config/index');
+const TransactionHistory = require('../models/TransactionHistory');
 
 const { INNSTAPAY_SECRET_KEY_TEST, BANK_URL } = config;
 
@@ -105,19 +106,13 @@ class InstapayController {
   static async bankTransfer(req, res) {
     try {
       const {
-        accountNo, bankCode, amount
+        accountNo, bankCode, amount, phoneNumber
       } = req.body;
-
       if (!bankCode || !accountNo
         || !amount
       ) return res.status(400).json(responses.error(400, 'Please fill in all fields'));
       if (amount < 50) return res.status(400).json(responses.error(400, 'Minimum amount you can withdraw is N50'));
-      const jwttoken = req.headers.authorization || req.headers['x-access-token'];
-      const decoded = jwt.decode(jwttoken);
-
-      const {
-        phoneNumber
-      } = decoded;
+      
       const retrivedWallet = await Wallet.findOne({ phoneNumber });
       if (!retrivedWallet) return res.status(404).json(responses.error(404, 'this account does not exist'));
       if (retrivedWallet && retrivedWallet.totalAmount < amount) return res.status(400).json(responses.error(400, 'Insufficient amount, please fund your account'));
@@ -131,6 +126,28 @@ class InstapayController {
           Authorization: `Bearer ${INNSTAPAY_SECRET_KEY_TEST}`
         }
       })).data;
+      try{
+        let balance;
+        const {
+          totalAmount,
+        } = retrivedWallet;
+        // eslint-disable-next-line prefer-const
+        balance = totalAmount - amount;
+        await Wallet.findOneAndUpdate({
+          phoneNumber: retrivedWallet.phoneNumber
+        }, {
+            totalAmount: balance
+          }, {
+            new: true
+          });
+          await TransactionHistory.create({
+            phoneNumber, amount, transactionType: 'withdrawal', status: 'pending', merchantReference: transfer.data.transactionReference
+          })
+      } catch(error){
+        console.log(error)
+      }
+     
+     
       const { message } = transfer;
       return res.status(200).json(
         responses.success(200, message, transfer)
@@ -179,6 +196,7 @@ class InstapayController {
       );
       return res.status(200).send('ok');
     } catch (error) {
+      console.log(error)
       return res.status(500).json(responses.error(500, 'Server error, attempt failed please try again'));
     }
   }
@@ -199,16 +217,21 @@ class InstapayController {
   static async updateBalanceAndHistoryDebit(
     res, newSenderTransaction, phone, amount, notification_type, reference, status,
   ) {
+   
+    if (!phone) {
+      const transactionHistory = await TransactionHistory.find({ merchantReference: reference });
+      newSenderTransaction.phone = transactionHistory[0].phoneNumber;
+    }
     let balance;
-    if (status === 'successful' && notification_type === 'transfer') {
-      const retrievedWallet = await Wallet.findOne({ phoneNumber: phone });
+    if (status !== 'successful' && notification_type === 'transfer') {
+      const retrievedWallet = await Wallet.findOne({ phoneNumber: transactionHistory[0].phoneNumber });
       const {
         totalAmount,
       } = retrievedWallet;
       // eslint-disable-next-line prefer-const
-      balance = totalAmount - amount;
+      balance = totalAmount + amount;
       await Wallet.findOneAndUpdate({
-        phoneNumber: retrievedWallet.phoneNumber
+        phoneNumber: transactionHistory[0].phoneNumber
       }, {
           totalAmount: balance
         }, {
@@ -235,19 +258,24 @@ class InstapayController {
   ) {
     let balance;
     if (status === 'successful' && notification_type === 'transaction') {
+      await TransactionHistory.create(newSenderTransaction);
       const retrievedWallet = await Wallet.findOne({ phoneNumber: phone });
-      const {
-        totalAmount,
-      } = retrievedWallet;
-      // eslint-disable-next-line prefer-const
-      balance = totalAmount + amount;
-      await Wallet.findOneAndUpdate({
-        phoneNumber: retrievedWallet.phoneNumber
-      }, {
-          totalAmount: balance
+      const checkReference = await TransactionHistory.find({merchantReference: reference})
+      if (!checkReference) {
+        const {
+          totalAmount,
+        } = retrievedWallet;
+        // eslint-disable-next-line prefer-const
+        balance = totalAmount + amount;
+        await Wallet.findOneAndUpdate({
+          phoneNumber: retrievedWallet.phoneNumber
         }, {
-          new: true
-        });
+            totalAmount: balance
+          }, {
+            new: true
+          });
+      }
+   
     }
   }
 }
