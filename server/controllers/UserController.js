@@ -674,8 +674,11 @@ class UsersController {
       return res.status(500).json(responses.error(500, "Sorry, server error!"));
     }
     
+<<<<<<< HEAD
   
 
+=======
+>>>>>>> b8a4b7b7697c235de3a0e7c2ac93f1b6ede6cde5
   /**
    *@description get a single agent
    *@static

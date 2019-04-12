@@ -6,9 +6,9 @@ const ninbvnRoute = require('./ninbvn');
 
 const app = express();
 
+app.use('/wallet', walletRoutes);
 app.use('/', agentRoutes);
 app.use('/', transactionRoutes);
-app.use('/wallet', walletRoutes);
 app.use('/', ninbvnRoute);
 
 module.exports = app;

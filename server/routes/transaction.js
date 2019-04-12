@@ -16,16 +16,16 @@ const {
 } = TransactionController;
 
 // authenticate routes
-router.use(auth);
+;
 
 // routes
-router.post('/createTransaction', createTransaction);
-router.get('/transactions', getTransactions);
-router.put('/debitOffline', debitOffline);
+router.post('/createTransaction', auth, createTransaction);
+router.get('/transactions', auth, getTransactions);
+router.put('/debitOffline', auth, debitOffline);
 
 // number validation 
-router.get('/agentTransaction/:agentNumber', numberChecker, getAgentTransaction);
-router.get("/vehicleTransaction/:vrtID", numberChecker, getVehicleTrips);
+router.get('/agentTransaction/:agentNumber', auth, numberChecker, getAgentTransaction);
+router.get("/vehicleTransaction/:vrtID", auth, numberChecker, getVehicleTrips);
 
 
 

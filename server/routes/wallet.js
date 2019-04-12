@@ -13,19 +13,18 @@ const { getBankList, creditWallet, bankTransfer, webHook } = InstapayController;
 const { getTransactionHistory } = TransactionHistoryController;
 
 // webhook 
-
 router.post('/webhook', webHook);
 
-// authenticated routes
 router.use(auth);
+// authenticated routes
+router.post('/fundwallet', creditWallet);
 router.put('/addbank', addBankData);
 router.put('/removebank', removeBankData);
-router.put('/activatewallet', activatedWallet);
+router.put('/activatewallet',  activatedWallet);
 router.put('/walletcodereset', walletCodeReset);
-router.put('/walletcoderecovery', walletCodeRecovery);
-router.get('/checkbalance', checkBalance);
-router.post('/sendmoney', sendMoney);
-router.post('/fundwallet', creditWallet);
+router.put('/walletcoderecovery',  walletCodeRecovery);
+router.get('/checkbalance',  checkBalance);
+router.post('/sendmoney',  sendMoney);
 router.post('/debitwallet', bankTransfer);
 router.get('/banklist', getBankList);
 router.get('/transactionHistory', getTransactionHistory);
