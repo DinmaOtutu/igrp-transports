@@ -597,28 +597,32 @@ class UsersController {
     try {
 
 
-      const { pageNo, perPage } = req.query;
+      const { currentPage, perPage } = req.query;
 
 
 
-      if (parseInt(pageNo) < 0 || parseInt(pageNo) === 0) {
+      if (parseInt(currentPage) < 0 || parseInt(currentPage) === 0) {
         return res.status(404).json(responses.error(404, 'invalid page number'));
       }
       const query = {};
-      query.skip = perPage * (pageNo - 1)
+      query.skip = perPage * (currentPage - 1)
       query.limit = (perPage, 10)
       const agents = await User.find({ role: 'user' }, {}, query);
       
-      if (agents.length === 0) {
-        return res
-          .status(404)
-          .json(responses.error(404, "Sorry, no agents created yet!"));
-      }
+     
+
       if (agents) {
+        if (parseInt(currentPage) > agents.length) {
+          return res.status(404).json(responses.error(404, 'Page doesnt exist'))
+        }
+        query.outputCount = agents.length
+
         return res
           .status(200)
-          .json(responses.success(200, "Agents retrieved succssfully", agents));
+          .json(responses.success(200, "Agents retrieved succssfully", {agents, query}));
+
       }
+     
 
       return res.status(500).json(responses.error(500, "Sorry, server error!"));
     } catch (error) {
@@ -635,32 +639,46 @@ class UsersController {
    */
   static async allVehicle(req, res) {
   
-    const { pageNo, perPage } = req.query;
+    const { currentPage, perPage } = req.query;
    
   
 
-    if (parseInt(pageNo) < 0 || parseInt(pageNo) === 0 ){
+    if (parseInt(currentPage) < 0 || parseInt(currentPage) === 0 ){
   return res.status(404).json(responses.error(404, 'invalid page number'));
 }
+
+
+    
+   
     const query = {};
-    query.skip = perPage * (pageNo - 1)
+    query.skip = perPage * (currentPage - 1)
     query.limit = (perPage,10)
     const vehicle = await User.find({ role: 'driver' },{}, query);
+    if (parseInt(currentPage) > vehicle.length) {
+      return res.status(404).json(responses.error(404, 'Page doesnt exist'))
+    }
       if (!vehicle.length) {
         return res
           .status(404)
           .json(responses.error(404, "Sorry, no vehicles created yet!"));
       }
       if (vehicle) {
+        query.outputCount = vehicle.length
+
         return res
           .status(200)
           .json(
-            responses.success(200, "Successfully retrieved vehicles", vehicle)
+            responses.success(200, "Successfully retrieved vehicles", {vehicle, query})
           );
       }
       return res.status(500).json(responses.error(500, "Sorry, server error!"));
     }
     
+<<<<<<< HEAD
+  
+
+=======
+>>>>>>> b8a4b7b7697c235de3a0e7c2ac93f1b6ede6cde5
   /**
    *@description get a single agent
    *@static
