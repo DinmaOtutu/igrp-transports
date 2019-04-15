@@ -619,7 +619,12 @@ class UsersController {
 
         return res
           .status(200)
-          .json(responses.success(200, "Agents retrieved succssfully", agents));
+          .json(
+            responses.success(200, "Agents retrieved succssfully", {
+              ...agents,
+              currentPage
+            })
+          );
 
       }
      
@@ -668,7 +673,7 @@ class UsersController {
         return res
           .status(200)
           .json(
-            responses.success(200, "Successfully retrieved vehicles", vehicle)
+            responses.success(200, "Successfully retrieved vehicles", {...vehicle, currentPage})
           );
       }
       return res.status(500).json(responses.error(500, "Sorry, server error!"));
