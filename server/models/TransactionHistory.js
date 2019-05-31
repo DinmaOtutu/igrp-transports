@@ -25,6 +25,9 @@ const transactionHistorySchema = new Schema({
     type: String,
     required: true
   },
+  topup: {
+    type: String
+  },
   amount: {
     type: Number
   },

@@ -171,6 +171,7 @@ class InstapayController {
     */
   static async webHook(req, res) {
     try {
+      console.log(req.body, 'requestttttttttttttttttt')
       const phone = req.body.data.customer ? req.body.data.customer.phone : null;
       const firstName = req.body.data.customer ? req.body.data.customer.firstName : null;
       const lastName = req.body.data.customer ? req.body.data.customer.lastName : null;
@@ -179,7 +180,7 @@ class InstapayController {
       const { notification_type } = req.body;
       const { status } = req.body.data;
       const newSenderTransaction = {
-        phoneNumber: phone,
+        phoneNumber: parseInt(phone),
         amount,
         firstName,
         lastName,
@@ -187,13 +188,12 @@ class InstapayController {
         merchantReference: [reference],
         notification_type
       };
-
       await InstapayController.updateBalanceAndHistoryCredit(
         res, newSenderTransaction, phone, amount, notification_type, reference, status,
       );
-      await InstapayController.updateBalanceAndHistoryDebit(
-        res, newSenderTransaction, phone, amount, notification_type, reference, status,
-      );
+      // await InstapayController.updateBalanceAndHistoryDebit(
+      //   res, newSenderTransaction, phone, amount, notification_type, reference, status,
+      // );
       return res.status(200).send('ok');
     } catch (error) {
       console.log(error)
@@ -214,31 +214,31 @@ class InstapayController {
    *@returns {object} - null
    *@memberof walletController
    */
-  static async updateBalanceAndHistoryDebit(
-    res, newSenderTransaction, phone, amount, notification_type, reference, status,
-  ) {
+  // static async updateBalanceAndHistoryDebit(
+  //   res, newSenderTransaction, phone, amount, notification_type, reference, status,
+  // ) {
    
-    if (!phone) {
-      const transactionHistory = await TransactionHistory.find({ merchantReference: reference });
-      newSenderTransaction.phone = transactionHistory[0].phoneNumber;
-    }
-    let balance;
-    if (status !== 'successful' && notification_type === 'transfer') {
-      const retrievedWallet = await Wallet.findOne({ phoneNumber: transactionHistory[0].phoneNumber });
-      const {
-        totalAmount,
-      } = retrievedWallet;
-      // eslint-disable-next-line prefer-const
-      balance = totalAmount + amount;
-      await Wallet.findOneAndUpdate({
-        phoneNumber: transactionHistory[0].phoneNumber
-      }, {
-          totalAmount: balance
-        }, {
-          new: true
-        });
-    }
-  }
+  //   if (!phone) {
+  //     const transactionHistory = await TransactionHistory.find({ merchantReference: reference });
+  //     newSenderTransaction.phone = transactionHistory[0].phoneNumber;
+  //   }
+  //   let balance;
+  //   if (status !== 'successful' && notification_type === 'transfer') {
+  //     const retrievedWallet = await Wallet.findOne({ phoneNumber: transactionHistory[0].phoneNumber });
+  //     const {
+  //       totalAmount,
+  //     } = retrievedWallet;
+  //     // eslint-disable-next-line prefer-const
+  //     balance = totalAmount + amount;
+  //     await Wallet.findOneAndUpdate({
+  //       phoneNumber: transactionHistory[0].phoneNumber
+  //     }, {
+  //         totalAmount: balance
+  //       }, {
+  //         new: true
+  //       });
+  //   }
+  // }
 
   /**
    *@description Updates a user's balance and creates transaction history
@@ -257,25 +257,29 @@ class InstapayController {
     res, newSenderTransaction, phone, amount, notification_type, reference, status,
   ) {
     let balance;
-    if (status === 'successful' && notification_type === 'transaction') {
-      await TransactionHistory.create(newSenderTransaction);
-      const retrievedWallet = await Wallet.findOne({ phoneNumber: phone });
+    
+    if (newSenderTransaction.status === 'successful' && newSenderTransaction.notification_type === 'transaction') {
       const checkReference = await TransactionHistory.find({merchantReference: reference})
       if (!checkReference) {
-        const {
-          totalAmount,
-        } = retrievedWallet;
-        // eslint-disable-next-line prefer-const
-        balance = totalAmount + amount;
-        await Wallet.findOneAndUpdate({
-          phoneNumber: retrievedWallet.phoneNumber
-        }, {
-            totalAmount: balance
-          }, {
-            new: true
-          });
+        await TransactionHistory.create({newSenderTransaction, phoneNumber: newSenderTransaction.phoneNumber, status, merchantReference: reference, amount, notification_type, phone});
+        const retrievedWallet = await Wallet.findOne({ phoneNumber: newSenderTransaction.phoneNumber});
+        if (!checkReference) {
+          const {
+            totalAmount,
+          } = retrievedWallet;
+          balance = totalAmount + amount;
+          await Wallet.findOneAndUpdate({
+            phoneNumber: newSenderTransaction.phoneNumber
+          }, { 
+            $set: {
+    // eslint-disable-next-line prefer-const
+    totalAmount: balance
+  }
+  }, {
+    new: true
+  });
       }
-   
+      }
     }
   }
 }
